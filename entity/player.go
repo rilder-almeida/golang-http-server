@@ -1,11 +1,15 @@
 package entity
 
 type PlayerRepository interface {
-	GetPlayer(name string) (*Player, error)
-	PostPlayer(player *Player) error
+	ShowAll() ([]*Player, error)
+	GetPlayer(string) (*Player, error)
+	PostPlayer(*Player) error
+	PutPlayer(string, *Player) error
+	DeletePlayer(string) error
+	NewName(string) *Player
 }
 
 type Player struct {
 	Name  string
-	Score Score
+	Score ScoreRepository
 }

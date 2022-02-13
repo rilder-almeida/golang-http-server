@@ -1,10 +1,12 @@
 package entity
 
-type Score struct {
-	Value int
+type ScoreRepository interface {
+	AddScore()
+	GetScore() int
+	UpdateScore(int)
+	ResetScore()
 }
 
-type ScoreRepository interface {
-	AddScore(score *Score) error
-	GetScore(name string) (*Score, error)
+type Score struct {
+	Value int
 }
