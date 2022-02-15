@@ -12,6 +12,10 @@ type ScoreRepositoryMemory struct {
 	Db *ScoreMemoryDb
 }
 
+func NewScoreRepositoryMemory() *ScoreRepositoryMemory {
+	return &ScoreRepositoryMemory{&ScoreMemoryDb{&entity.Score{Value: 0}}}
+}
+
 func (s *ScoreRepositoryMemory) AddScore() {
 	s.Db.Points.Value += 1
 }

@@ -1,15 +1,13 @@
-package http
+package service
 
 import (
 	"fmt"
 	"net/http"
 	"strings"
-
-	"github.com/rilder-almeida/golang-http-server/service/scoreboard"
 )
 
 type Server struct {
-	scoreboard *scoreboard.ScoreBoardRepository
+	scoreboard *ScoreBoardRepository
 }
 
 func (p *Server) UrlParser(url string) (string, string, string, error) {

@@ -6,7 +6,7 @@ type PlayerRepository interface {
 	PostPlayer(*Player) error
 	PutPlayer(string, *Player) error
 	DeletePlayer(string) error
-	NewName(string) *Player
+	NewPlayer(string, ScoreRepository) *Player
 }
 
 type Player struct {

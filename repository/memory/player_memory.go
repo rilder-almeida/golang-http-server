@@ -14,6 +14,10 @@ type PlayerRepositoryMemory struct {
 	Db *PlayersMemoryDb
 }
 
+func NewPlayerRepositoryMemory() *PlayerRepositoryMemory {
+	return &PlayerRepositoryMemory{&PlayersMemoryDb{[]*entity.Player{}}}
+}
+
 func (p *PlayerRepositoryMemory) ShowAll() ([]*entity.Player, error) {
 	if len(p.Db.Players) == 0 {
 		return nil, fmt.Errorf("no players found")
@@ -64,6 +68,6 @@ func (p *PlayerRepositoryMemory) DeletePlayer(name string) error {
 }
 
 // New player
-func (p *PlayerRepositoryMemory) NewName(name string, scoreRepository entity.ScoreRepository) *entity.Player {
-	return &entity.Player{Name: name, Score: scoreRepository}
+func (p *PlayerRepositoryMemory) NewPlayer(name string, scoreRepository *entity.ScoreRepository) *entity.Player {
+	return &entity.Player{Name: name, Score: *scoreRepository}
 }
