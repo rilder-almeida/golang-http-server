@@ -10,7 +10,11 @@ type Server struct {
 	scoreboard *ScoreBoardRepository
 }
 
-func (p *Server) UrlParser(url string) (string, string, string, error) {
+func NewServer(scoreboard *ScoreBoardRepository) *Server {
+	return &Server{scoreboard}
+}
+
+func UrlParser(url string) (string, string, string, error) {
 	splittedUrl := strings.Split(url, "/")
 	switch len(splittedUrl) {
 	case 2:
@@ -30,8 +34,8 @@ func (p *Server) UrlParser(url string) (string, string, string, error) {
 	}
 }
 
-func (p *Server) ProcessRequest(writer http.ResponseWriter, request *http.Request) {
-	infoData, playerName, putArg, err := p.UrlParser(request.URL.Path)
+func (p *Server) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	infoData, playerName, putArg, err := UrlParser(request.URL.Path)
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
 		return

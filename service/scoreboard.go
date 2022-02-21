@@ -44,7 +44,7 @@ func (sb *ScoreBoardRepository) PostPlayer(writer http.ResponseWriter, name stri
 	newPlayer := sb.storage.PlayerStorage.NewPlayer(name, sb.storage.ScoreStorage)
 	err := sb.storage.PlayerStorage.PostPlayer(newPlayer)
 	if err != nil {
-		writer.WriteHeader(http.StatusNotFound)
+		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	writer.WriteHeader(http.StatusAccepted)

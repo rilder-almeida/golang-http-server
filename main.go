@@ -4,11 +4,12 @@ import (
 	"log"
 	"net/http"
 
-	repository "github.com/rilder-almeida/golang-http-server/repository/memory"
+	repositoryMemory "github.com/rilder-almeida/golang-http-server/repository/memory"
 	"github.com/rilder-almeida/golang-http-server/service"
 )
 
 func main() {
-	server := &service.NewScoreBoardRepository(repository.NewPlayerRepositoryMemory(), repository.NewScoreRepositoryMemory())
+	scoreboard := service.NewScoreBoardRepository(repositoryMemory.NewPlayerRepositoryMemory(), repositoryMemory.NewScoreRepositoryMemory())
+	server := service.NewServer(scoreboard)
 	log.Fatal(http.ListenAndServe(":5000", server))
 }

@@ -68,6 +68,6 @@ func (p *PlayerRepositoryMemory) DeletePlayer(name string) error {
 }
 
 // New player
-func (p *PlayerRepositoryMemory) NewPlayer(name string, scoreRepository *entity.ScoreRepository) *entity.Player {
-	return &entity.Player{Name: name, Score: *scoreRepository}
+func (p *PlayerRepositoryMemory) NewPlayer(name string, scoreRepository entity.ScoreRepository) *entity.Player {
+	return &entity.Player{Name: name, Score: scoreRepository}
 }
