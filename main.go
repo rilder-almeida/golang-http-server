@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	scoreboard := service.NewScoreBoardRepository(repositoryMemory.NewPlayerRepositoryMemory(), repositoryMemory.NewScoreRepositoryMemory())
+	scoreboard := service.NewScoreBoardRepository(repositoryMemory.NewPlayerRepositoryMemory())
 	server := service.NewServer(scoreboard)
 	log.Fatal(http.ListenAndServe(":5000", server))
 }

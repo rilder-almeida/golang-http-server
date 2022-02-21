@@ -12,8 +12,8 @@ type ScoreBoardRepository struct {
 	storage entity.Storage
 }
 
-func NewScoreBoardRepository(playerRepo entity.PlayerRepository, scoreRepo entity.ScoreRepository) *ScoreBoardRepository {
-	return &ScoreBoardRepository{entity.NewStorage(playerRepo, scoreRepo)}
+func NewScoreBoardRepository(playerRepo entity.PlayerRepository) *ScoreBoardRepository {
+	return &ScoreBoardRepository{entity.NewStorage(playerRepo)}
 }
 
 func printPlayer(player *entity.Player) string {
@@ -44,7 +44,7 @@ func (sb *ScoreBoardRepository) PostPlayer(writer http.ResponseWriter, name stri
 	newPlayer := sb.storage.PlayerStorage.NewPlayer(name, sb.storage.ScoreStorage)
 	err := sb.storage.PlayerStorage.PostPlayer(newPlayer)
 	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusNotFound)
 		return
 	}
 	writer.WriteHeader(http.StatusAccepted)

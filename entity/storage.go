@@ -5,9 +5,8 @@ type Storage struct {
 	ScoreStorage  ScoreRepository
 }
 
-func NewStorage(playerRepo PlayerRepository, scoreRepo ScoreRepository) Storage {
+func NewStorage(playerRepo PlayerRepository) Storage {
 	return Storage{
 		PlayerStorage: playerRepo,
-		ScoreStorage:  scoreRepo,
 	}
 }
