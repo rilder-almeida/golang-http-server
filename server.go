@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-//server.go
 type PlayerStore interface {
 	GetPlayerScore(name string) int
 	RecordWin(name string)
