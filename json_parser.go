@@ -14,6 +14,12 @@ func Unmarshal(data []byte, v interface{}) error {
 }
 
 func ReadJsonFromFile(filename string, v interface{}) error {
+	if FileExists(filename) {
+		err := CreateFile(filename)
+		if err != nil {
+			return err
+		}
+	}
 	file, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -25,7 +31,7 @@ func ReadJsonFromFile(filename string, v interface{}) error {
 }
 
 func WriteJsonToFile(filename string, v interface{}) error {
-	if !FileExists(filename) {
+	if FileExists(filename) {
 		err := CreateFile(filename)
 		if err != nil {
 			return err
@@ -53,7 +59,7 @@ func WriteJsonToFile(filename string, v interface{}) error {
 
 func FileExists(filename string) bool {
 	_, err := os.Stat(filename)
-	return !os.IsNotExist(err)
+	return os.IsNotExist(err)
 }
 
 func CreateFile(filename string) error {
