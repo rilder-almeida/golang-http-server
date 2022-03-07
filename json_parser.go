@@ -2,15 +2,16 @@ package main
 
 import (
 	"encoding/json"
+	"io/fs"
 	"os"
 )
 
-func Marshal(v interface{}) ([]byte, error) {
-	return json.Marshal(v)
+func Marshal(v *interface{}) ([]byte, error) {
+	return json.Marshal(&v)
 }
 
-func Unmarshal(data []byte, v interface{}) error {
-	return json.Unmarshal(data, v)
+func Unmarshal(data []byte, v *interface{}) error {
+	return json.Unmarshal(data, &v)
 }
 
 func ReadJsonFromFile(filename string, v interface{}) error {
@@ -20,14 +21,12 @@ func ReadJsonFromFile(filename string, v interface{}) error {
 			return err
 		}
 	}
-	file, err := os.Open(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
-	var data []byte
-	file.Read(data)
-	return Unmarshal(data, v)
+
+	return Unmarshal(data, &v)
 }
 
 func WriteJsonToFile(filename string, v interface{}) error {
@@ -42,18 +41,12 @@ func WriteJsonToFile(filename string, v interface{}) error {
 		return err
 	}
 
-	file, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	data, err := Marshal(v)
+	data, err := Marshal(&v)
 	if err != nil {
 		return err
 	}
 
-	_, err = file.Write(data)
+	err = os.WriteFile(filename, data, fs.ModePerm)
 	return err
 }
 
@@ -73,13 +66,7 @@ func CreateFile(filename string) error {
 }
 
 func TruncateFile(filename string) error {
-	file, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	err = file.Truncate(0)
+	err := os.WriteFile(filename, []byte{}, fs.ModePerm)
 	if err != nil {
 		return err
 	}
