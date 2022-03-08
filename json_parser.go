@@ -6,20 +6,20 @@ import (
 	"os"
 )
 
-func ToJsonFile(p interface{}) error {
-	data, err := json.Marshal(p)
+func ToJsonFile(filename string, v interface{}) error {
+	data, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(JSONFILENAME, data, fs.ModePerm)
+	err = os.WriteFile(filename, data, fs.ModePerm)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func FromJsonFile(v interface{}) error {
-	data, err := os.ReadFile(JSONFILENAME)
+func FromJsonFile(filename string, v interface{}) error {
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}

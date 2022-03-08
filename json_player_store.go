@@ -18,23 +18,23 @@ func NewJsonPlayerStore() *JsonPlayerStore {
 }
 
 func (j *JsonPlayerStore) RecordWin(name string) {
-	err := FromJsonFile(j)
+	err := FromJsonFile(JSONFILENAME, j)
 	if err != nil {
 		panic(err)
 	}
 	for i, p := range j.Store {
 		if p.Name == name {
 			j.Store[i].Score++
-			ToJsonFile(j)
+			ToJsonFile(JSONFILENAME, j)
 			return
 		}
 	}
 	j.Store = append(j.Store, Player{name, 1})
-	ToJsonFile(j)
+	ToJsonFile(JSONFILENAME, j)
 }
 
 func (j *JsonPlayerStore) GetPlayerScore(name string) int {
-	err := FromJsonFile(j)
+	err := FromJsonFile(JSONFILENAME, j)
 	if err != nil {
 		panic(err)
 	}
