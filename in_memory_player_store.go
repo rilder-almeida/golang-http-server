@@ -1,17 +1,17 @@
 package main
 
-func NewInMemoryPlayerStore() *InMemoryPlayerStore {
-	return &InMemoryPlayerStore{map[string]int{}}
+func NewInMemoryPlayerStore() PlayerStore {
+	return &inMemoryPlayerStore{map[string]int{}}
 }
 
-type InMemoryPlayerStore struct {
+type inMemoryPlayerStore struct {
 	store map[string]int
 }
 
-func (i *InMemoryPlayerStore) RecordWin(name string) {
+func (i *inMemoryPlayerStore) RecordWin(name string) {
 	i.store[name]++
 }
 
-func (i *InMemoryPlayerStore) GetPlayerScore(name string) int {
+func (i *inMemoryPlayerStore) GetPlayerScore(name string) int {
 	return i.store[name]
 }

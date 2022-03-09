@@ -1,59 +1,47 @@
 package main
 
-import "fmt"
-
 const (
 	JSONFILENAME = "players.json"
 )
 
-type Player struct {
-	name  string
-	score int
+type player struct {
+	Name  string `json:"name"`
+	Score int    `json:"score"`
 }
 
-type JsonPlayerStore struct {
-	store []*Player
-
-	// ! WHY GOD? WHY?????
-	// ? store []*Player != store []Player
-	// ? &JsonPlayerStore{[]*Player{}} != &JsonPlayerStore{[]Player{}}
-	// ? &JsonPlayerStore{*[]Player{}} != &JsonPlayerStore{[]*Player{}}
+type jsonPlayerStore struct {
+	Store    []player `json:"store"`
+	jsonFile string   `json:"-"`
 }
 
-func NewJsonPlayerStore() *JsonPlayerStore {
-	return &JsonPlayerStore{[]*Player{}}
+func NewJsonPlayerStore() PlayerStore {
+	return &jsonPlayerStore{[]player{}, JSONFILENAME}
 }
 
-func (j *JsonPlayerStore) RecordWin(name string) {
-	err := ReadJsonFromFile(JSONFILENAME, &j.store)
+func (j *jsonPlayerStore) RecordWin(name string) {
+	err := FromJsonFile(JSONFILENAME, j)
 	if err != nil {
-		fmt.Println("Error reading to file: ", err)
+		panic(err)
 	}
-	for _, p := range j.store {
-		if p.name == name {
-			p.score++
-			err := WriteJsonToFile(JSONFILENAME, &j.store)
-			if err != nil {
-				fmt.Println("Error writing to file: ", err)
-			}
+	for i, p := range j.Store {
+		if p.Name == name {
+			j.Store[i].Score++
+			ToJsonFile(JSONFILENAME, j)
 			return
 		}
 	}
-	j.store = append(j.store, &Player{name, 1})
-	err = WriteJsonToFile(JSONFILENAME, &j.store)
-	if err != nil {
-		fmt.Println("Error writing to file: ", err)
-	}
+	j.Store = append(j.Store, player{name, 1})
+	ToJsonFile(JSONFILENAME, j)
 }
 
-func (j *JsonPlayerStore) GetPlayerScore(name string) int {
-	err := ReadJsonFromFile(JSONFILENAME, &j.store)
+func (j *jsonPlayerStore) GetPlayerScore(name string) int {
+	err := FromJsonFile(JSONFILENAME, j)
 	if err != nil {
-		fmt.Println("Error reading to file: ", err)
+		panic(err)
 	}
-	for _, p := range j.store {
-		if p.name == name {
-			return p.score
+	for i, p := range j.Store {
+		if p.Name == name {
+			return j.Store[i].Score
 		}
 	}
 	return 0
