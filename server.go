@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -13,6 +14,23 @@ type PlayerStore interface {
 
 type PlayerServer struct {
 	store PlayerStore
+}
+
+func NewServer() *PlayerServer {
+	return &PlayerServer{
+		store: getPlayerStore(),
+	}
+}
+
+func getPlayerStore() PlayerStore {
+	envVar := os.Getenv("PLAYER_STORE")
+	switch envVar {
+	case "JSON":
+		return NewJsonPlayerStore()
+	case "IN_MEMORY":
+		return NewInMemoryPlayerStore()
+	}
+	panic(fmt.Sprintf("Bad environment variable value: %s", envVar))
 }
 
 func (p *PlayerServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {

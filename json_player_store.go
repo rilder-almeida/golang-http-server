@@ -4,20 +4,21 @@ const (
 	JSONFILENAME = "players.json"
 )
 
-type Player struct {
+type player struct {
 	Name  string `json:"name"`
 	Score int    `json:"score"`
 }
 
-type JsonPlayerStore struct {
-	Store []Player `json:"store"`
+type jsonPlayerStore struct {
+	Store    []player `json:"store"`
+	jsonFile string   `json:"-"`
 }
 
-func NewJsonPlayerStore() *JsonPlayerStore {
-	return &JsonPlayerStore{}
+func NewJsonPlayerStore() PlayerStore {
+	return &jsonPlayerStore{[]player{}, JSONFILENAME}
 }
 
-func (j *JsonPlayerStore) RecordWin(name string) {
+func (j *jsonPlayerStore) RecordWin(name string) {
 	err := FromJsonFile(JSONFILENAME, j)
 	if err != nil {
 		panic(err)
@@ -29,11 +30,11 @@ func (j *JsonPlayerStore) RecordWin(name string) {
 			return
 		}
 	}
-	j.Store = append(j.Store, Player{name, 1})
+	j.Store = append(j.Store, player{name, 1})
 	ToJsonFile(JSONFILENAME, j)
 }
 
-func (j *JsonPlayerStore) GetPlayerScore(name string) int {
+func (j *jsonPlayerStore) GetPlayerScore(name string) int {
 	err := FromJsonFile(JSONFILENAME, j)
 	if err != nil {
 		panic(err)

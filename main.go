@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	server := &PlayerServer{NewJsonPlayerStore()}
+	server := NewServer()
 	log.Fatal(http.ListenAndServe(":5000", server))
 }

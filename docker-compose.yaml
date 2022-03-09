@@ -6,6 +6,7 @@ services:
         environment:
             LOG_LEVEL: "DEBUG"
             LOG_HUMAN: "true"
+            PLAYER_STORE: "JSON"
         ports:
           - 5000:5000
         volumes:
