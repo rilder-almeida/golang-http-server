@@ -89,7 +89,7 @@ func (n *NfeServer) processPostRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: xmlParser should be call inside *_nfe_store files
+	// TODO: xmlParser should be implemented on *_nfe_store files
 	xmlParsed, err := xmlParser([]byte(jsonRequest.XML))
 	if err != nil {
 		fmt.Printf("Error parsing XML: %s", err)
