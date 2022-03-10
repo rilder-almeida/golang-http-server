@@ -6,9 +6,9 @@ services:
         environment:
             LOG_LEVEL: "DEBUG"
             LOG_HUMAN: "true"
-            NFE_STORE: "IN_MEMORY"
+            PLAYER_STORE: "JSON"
         ports:
-          - 8000:8000
+          - 5000:5000
         volumes:
             - './:/go/src/github.com/golang-http-server/golang-http-server'
         working_dir: /go/src/github.com/golang-http-server/golang-http-server

@@ -1,0 +1,928 @@
+<nfeProc versao="4.00"
+    xmlns="http://www.portalfiscal.inf.br/nfe">
+    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infNFe versao="4.00" Id="NFe35200664902000000160550010000119461000000014">
+            <ide>
+                <cUF>35</cUF>
+                <cNF>00000001</cNF>
+                <natOp>VENDA</natOp>
+                <mod>55</mod>
+                <serie>1</serie>
+                <nNF>11946</nNF>
+                <dhEmi>2020-06-26T09:19:55-03:00</dhEmi>
+                <dhSaiEnt>2020-06-26T09:19:55-03:00</dhSaiEnt>
+                <tpNF>1</tpNF>
+                <idDest>1</idDest>
+                <cMunFG>3548906</cMunFG>
+                <tpImp>1</tpImp>
+                <tpEmis>1</tpEmis>
+                <cDV>4</cDV>
+                <tpAmb>1</tpAmb>
+                <finNFe>1</finNFe>
+                <indFinal>1</indFinal>
+                <indPres>0</indPres>
+                <procEmi>0</procEmi>
+                <verProc>5.2.16.13</verProc>
+            </ide>
+            <emit>
+                <CNPJ>64902000000160</CNPJ>
+                <xNome>AUTO ELETRICO MARIM LTDA</xNome>
+                <xFant>AUTO ELETRICO MARIM</xFant>
+                <enderEmit>
+                    <xLgr>RUA ROTARY CLUBE</xLgr>
+                    <nro>230</nro>
+                    <xBairro>VILA MARINA</xBairro>
+                    <cMun>3548906</cMun>
+                    <xMun>SAO CARLOS</xMun>
+                    <UF>SP</UF>
+                    <CEP>13566450</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>BRASIL</xPais>
+                    <fone>33615116</fone>
+                </enderEmit>
+                <IE>637069880111</IE>
+                <CRT>1</CRT>
+            </emit>
+            <dest>
+                <CNPJ>03160081000185</CNPJ>
+                <xNome>C.J.R CONSTRUTORA LTDA</xNome>
+                <enderDest>
+                    <xLgr>ROD. WASHINGTON LUIZ</xLgr>
+                    <nro>KM 240</nro>
+                    <xBairro>RURAL</xBairro>
+                    <cMun>3548906</cMun>
+                    <xMun>SAO CARLOS</xMun>
+                    <UF>SP</UF>
+                    <CEP>13560970</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>BRASIL</xPais>
+                    <fone>1633612039</fone>
+                </enderDest>
+                <indIEDest>1</indIEDest>
+                <IE>637143185117</IE>
+            </dest>
+            <det nItem="1">
+                <prod>
+                    <cProd>087843</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>CHAVE LIGA/DESL GERADOR B4T6500 - 12803170</xProd>
+                    <NCM>85369090</NCM>
+                    <CEST>1200400</CEST>
+                    <CFOP>5102</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>75.0000000000</vUnCom>
+                    <vProd>75.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>75.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>8.72</vTotTrib>
+                    <ICMS>
+                        <ICMSSN102>
+                            <orig>0</orig>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="2">
+                <prod>
+                    <cProd>P100010</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>BATERIA PM150D PRODEL</xProd>
+                    <NCM>85071090</NCM>
+                    <CEST>0105300</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>2.0000</qCom>
+                    <vUnCom>600.0000000000</vUnCom>
+                    <vProd>1200.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>2.0000</qTrib>
+                    <vUnTrib>600.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>317.88</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>04</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>04</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="3">
+                <prod>
+                    <cProd>ETE7885</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>CONEC. 1 VIA INJ. VAO MT. C/ TERM</xProd>
+                    <NCM>85444200</NCM>
+                    <CEST>1200700</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>12.0000000000</vUnCom>
+                    <vProd>12.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>12.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>1.95</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="4">
+                <prod>
+                    <cProd>12342CI</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>LAMPADA 12342CI</xProd>
+                    <NCM>85392110</NCM>
+                    <CEST>0900100</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>20.0000000000</vUnCom>
+                    <vProd>20.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>20.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>1.58</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="5">
+                <prod>
+                    <cProd>DNI4029</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>SIRENE PIEZ. SOM INT. PROV/DAGU</xProd>
+                    <NCM>85311090</NCM>
+                    <CEST>0112000</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>49.0000000000</vUnCom>
+                    <vProd>49.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>49.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>7.48</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>04</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>04</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="6">
+                <prod>
+                    <cProd>GF0011AM</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>LENTE LANT. PUDIM UNIV. AMARELA</xProd>
+                    <NCM>85122022</NCM>
+                    <CEST>0105500</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>2.0000</qCom>
+                    <vUnCom>5.0000000000</vUnCom>
+                    <vProd>10.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>2.0000</qTrib>
+                    <vUnTrib>5.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>1.71</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="7">
+                <prod>
+                    <cProd>GF0016</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>LENTE LANTERNA TS. MB 1111 TDS</xProd>
+                    <NCM>85122022</NCM>
+                    <CEST>0105500</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>2.0000</qCom>
+                    <vUnCom>10.0000000000</vUnCom>
+                    <vProd>20.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>2.0000</qTrib>
+                    <vUnTrib>10.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>3.43</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>04</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>04</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="8">
+                <prod>
+                    <cProd>CP78112R</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>TERM.BAT.SAPAO REFOR.POS C/PR</xProd>
+                    <NCM>85365090</NCM>
+                    <CEST>0107000</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>3.0000</qCom>
+                    <vUnCom>6.0000000000</vUnCom>
+                    <vProd>18.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>3.0000</qTrib>
+                    <vUnTrib>6.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>3.10</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="9">
+                <prod>
+                    <cProd>P10006</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>PJ100E BATERIA PJ100E PRODEL</xProd>
+                    <NCM>85071090</NCM>
+                    <CEST>0105300</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>430.0000000000</vUnCom>
+                    <vProd>430.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>430.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>113.90</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="10">
+                <prod>
+                    <cProd>IM12121</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>ALAVANCA LIMP. DIANT. CAM. VOLKS 82120/8150 00/06</xProd>
+                    <NCM>85365090</NCM>
+                    <CEST>0107000</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>102.0000000000</vUnCom>
+                    <vProd>102.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>102.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>17.58</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISAliq>
+                            <CST>01</CST>
+                            <vBC>0.00</vBC>
+                            <pPIS>0.0000</pPIS>
+                            <vPIS>0.00</vPIS>
+                        </PISAliq>
+                    </PIS>
+                    <COFINS>
+                        <COFINSAliq>
+                            <CST>01</CST>
+                            <vBC>0.00</vBC>
+                            <pCOFINS>0.0000</pCOFINS>
+                            <vCOFINS>0.00</vCOFINS>
+                        </COFINSAliq>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="11">
+                <prod>
+                    <cProd>8PK1445</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>CORREIA</xProd>
+                    <NCM>40103100</NCM>
+                    <CEST>0100600</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>62.0000000000</vUnCom>
+                    <vProd>62.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>62.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>4.20</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="12">
+                <prod>
+                    <cProd>T1141AB</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>LAMPADA PISCA AM.UNIV.21W/12V</xProd>
+                    <NCM>85392110</NCM>
+                    <CEST>0900100</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>3.0000000000</vUnCom>
+                    <vProd>3.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>3.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>0.23</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="13">
+                <prod>
+                    <cProd>OS50076712</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>LAMPADA P/ LANT. UNI 67 5W/12V</xProd>
+                    <NCM>85392910</NCM>
+                    <CEST>0900100</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>3.0000000000</vUnCom>
+                    <vProd>3.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>3.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>0.23</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="14">
+                <prod>
+                    <cProd>4327</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>COXIM RAD INF 608/708 REI</xProd>
+                    <NCM>87089990</NCM>
+                    <CEST>0107600</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>19.0000000000</vUnCom>
+                    <vProd>19.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>19.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>2.81</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="15">
+                <prod>
+                    <cProd>9122080572</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>DIODO</xProd>
+                    <NCM>85411029</NCM>
+                    <CEST>2111700</CEST>
+                    <CFOP>5102</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>3.0000</qCom>
+                    <vUnCom>18.0000000000</vUnCom>
+                    <vProd>54.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>3.0000</qTrib>
+                    <vUnTrib>18.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>8.32</vTotTrib>
+                    <ICMS>
+                        <ICMSSN102>
+                            <orig>0</orig>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="16">
+                <prod>
+                    <cProd>PE0701</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>SUP.ESC.ALT.MB/MF/TOY/CBT 12V</xProd>
+                    <NCM>85119000</NCM>
+                    <CEST>0105400</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>19.0000000000</vUnCom>
+                    <vProd>19.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>19.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>3.26</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="17">
+                <prod>
+                    <cProd>NSK62201DDU</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>ROLAMENTO ALT. MB/VOLV/SCAN. L/C DUPL</xProd>
+                    <NCM>84821010</NCM>
+                    <CEST>0104900</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>28.0000000000</vUnCom>
+                    <vProd>28.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>28.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>4.62</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="18">
+                <prod>
+                    <cProd>NSK6303DDUC3</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>ROLAMENTO ALT. MB BOSCH UNIVERSAL</xProd>
+                    <NCM>84821010</NCM>
+                    <CEST>0104900</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>28.0000000000</vUnCom>
+                    <vProd>28.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>28.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>4.62</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="19">
+                <prod>
+                    <cProd>00005</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>ESTATOR 35A 12V</xProd>
+                    <NCM>85119000</NCM>
+                    <CEST>0105400</CEST>
+                    <CFOP>5405</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>98.0000000000</vUnCom>
+                    <vProd>98.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>98.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>16.82</vTotTrib>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <det nItem="20">
+                <prod>
+                    <cProd>0000816</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>BICO INJETOR</xProd>
+                    <NCM>90269090</NCM>
+                    <CEST>0107900</CEST>
+                    <CFOP>5102</CFOP>
+                    <uCom>PC</uCom>
+                    <qCom>4.0000</qCom>
+                    <vUnCom>859.0000000000</vUnCom>
+                    <vProd>3436.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PC</uTrib>
+                    <qTrib>4.0000</qTrib>
+                    <vUnTrib>859.0000000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <vTotTrib>272.13</vTotTrib>
+                    <ICMS>
+                        <ICMSSN102>
+                            <orig>0</orig>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <total>
+                <ICMSTot>
+                    <vBC>0.00</vBC>
+                    <vICMS>0.00</vICMS>
+                    <vICMSDeson>0.00</vICMSDeson>
+                    <vFCP>0.00</vFCP>
+                    <vBCST>0.00</vBCST>
+                    <vST>0.00</vST>
+                    <vFCPST>0.00</vFCPST>
+                    <vFCPSTRet>0.00</vFCPSTRet>
+                    <vProd>5686.00</vProd>
+                    <vFrete>0.00</vFrete>
+                    <vSeg>0.00</vSeg>
+                    <vDesc>0.00</vDesc>
+                    <vII>0.00</vII>
+                    <vIPI>0.00</vIPI>
+                    <vIPIDevol>0.00</vIPIDevol>
+                    <vPIS>0.00</vPIS>
+                    <vCOFINS>0.00</vCOFINS>
+                    <vOutro>0.00</vOutro>
+                    <vNF>5686.00</vNF>
+                    <vTotTrib>794.57</vTotTrib>
+                </ICMSTot>
+            </total>
+            <transp>
+                <modFrete>0</modFrete>
+                <vol>
+                    <qVol>0</qVol>
+                </vol>
+            </transp>
+            <cobr>
+                <fat>
+                    <nFat>11946</nFat>
+                    <vOrig>5686.00</vOrig>
+                    <vDesc>0.00</vDesc>
+                    <vLiq>5686.00</vLiq>
+                </fat>
+                <dup>
+                    <nDup>001</nDup>
+                    <dVenc>2020-06-26</dVenc>
+                    <vDup>3180.00</vDup>
+                </dup>
+                <dup>
+                    <nDup>002</nDup>
+                    <dVenc>2020-07-15</dVenc>
+                    <vDup>2506.00</vDup>
+                </dup>
+            </cobr>
+            <pag>
+                <detPag>
+                    <tPag>14</tPag>
+                    <vPag>5686.00</vPag>
+                </detPag>
+            </pag>
+            <infAdic>
+                <infAdFisco>I - DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL.;II - NAO GERA DIREITO A CREDITO FISCAL DE ISS E IPI.;</infAdFisco>
+                <infCpl>DOC.N: 407/2020;REF: TRITON/GERADOR/RC-03/CB-14 DIW-5422/CP-04 13180 NJK-0316/24220 BQE-2572/CB-13 23210 DIW-5433/FORD/MICHIGAN/;MOTOR SOLDA/CB-15 24250 EPF-5102/CC-01 608 CFC-1533.</infCpl>
+                <obsCont xCampo="ObsCont">
+                    <xTexto>Texto</xTexto>
+                </obsCont>
+                <obsFisco xCampo="ObsFisco">
+                    <xTexto>Texto</xTexto>
+                </obsFisco>
+            </infAdic>
+        </infNFe>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <SignedInfo>
+                <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+                <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+                <Reference URI="#NFe35200664902000000160550010000119461000000014">
+                    <Transforms>
+                        <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+                        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+                    </Transforms>
+                    <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+                    <DigestValue>mMO4EzbBdPrNWkCYiYANyOrk/wA=</DigestValue>
+                </Reference>
+            </SignedInfo>
+            <SignatureValue>KZtwZNrdzoi/Al+Qb6tMILzukge/tXy5TsFOB87eMYbfFpjuy/HOLhFo/R5Oc4MY6NYHrQOql0LQeAVD/rDDCZ4Lx8gmQVhF173Wpq+/Z81NE7GVJNLXZeiqzb/friNEQJPD92UAG/vIWIfCBtFCxMt70FhCsfmlAtEpMchrNfQA0YD4tisXhbrnRBlnZooR1bKO1Adazcyq/3852aGh6foRzse8PbTsCFvuj/AVe6y/DSHYHwZwiR+s6pF+yoL3+q3Gn8GvLCW2rONWrYc2GJxlKyoCMyI9/e87LJ7JNamLBiCixD95XLo+7B8/SNSXxboAM2b+ghsLW+X37WogUw==</SignatureValue>
+            <KeyInfo>
+                <X509Data>
+                    <X509Certificate>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</X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </Signature>
+    </NFe>
+    <protNFe versao="4.00">
+        <infProt Id="Id135200523341316">
+            <tpAmb>1</tpAmb>
+            <verAplic>SP_NFE_PL009_V4</verAplic>
+            <chNFe>35200664902000000160550010000119461000000014</chNFe>
+            <dhRecbto>2020-06-26T09:20:06-03:00</dhRecbto>
+            <nProt>135200523341316</nProt>
+            <digVal>mMO4EzbBdPrNWkCYiYANyOrk/wA=</digVal>
+            <cStat>100</cStat>
+            <xMotivo>Autorizado o uso da NF-e</xMotivo>
+        </infProt>
+    </protNFe>
+</nfeProc>

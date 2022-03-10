@@ -22,7 +22,13 @@
 
 - [X] Como realizar um request com um xml ou json no body pelo Postman? [Resposta](https://stackoverflow.com/questions/47295675/how-do-i-post-xml-data-to-a-webservice-with-postman)
 - [X] Como enviar um response com um xml ou json no body pela aplicação? [Resposta](https://golangbyexample.com/json-response-body-http-go/)
+- [X] Como criar a estrutura de uma entidade para documentos XML? [Resposta](https://tutorialedge.net/golang/parsing-xml-with-golang/)
 
 ## Sugestões
 
 - Criar tarefas ao fim das milestones aplicando o [Coding Style Guide](https://www.notion.so/arquiveiofficial/31735ff16956484a99363e3894d06289?v=035ce194e781401e8d2b8baee6b8a18e) da Casa Stark de forma gradual.
+- Disponibilizar uma NFe de exemplo
+
+## Correções
+
+- Request Miliestone 1 no Postman: `localhost:8000/nfse/v1` -> `localhost:8000/nfe/v1`
