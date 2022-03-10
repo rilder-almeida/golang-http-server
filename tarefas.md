@@ -27,8 +27,9 @@
 ## Sugestões
 
 - Criar tarefas ao fim das milestones aplicando o [Coding Style Guide](https://www.notion.so/arquiveiofficial/31735ff16956484a99363e3894d06289?v=035ce194e781401e8d2b8baee6b8a18e) da Casa Stark de forma gradual.
-- Disponibilizar uma NFe de exemplo
-
+- Disponibilizar uma NFe de exemplo.
+- Disponibilizar o schema do json de resposta para a POST request.
+  
 ## Correções
 
 - Request Miliestone 1 no Postman: `localhost:8000/nfse/v1` -> `localhost:8000/nfe/v1`

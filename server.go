@@ -16,8 +16,8 @@ import (
 
 type NfeStore interface {
 	//post method
-	ReceiveNfe()
-	ResponseNfe()
+	ReceiverNfe(XmlDocument) error
+	ResponserNfe(XmlDocument) (JsonPostResponse, error)
 	AssertNfe()
 	//get method
 	ReceiveId()
@@ -29,8 +29,13 @@ type NfeServer struct {
 	storage NfeStore
 }
 
-type JsonGetRequest struct {
+type JsonPostRequest struct {
 	XML string `json:"XML"`
+}
+type JsonPostResponse struct {
+	contentType string
+	bodyData    []byte
+	httpStatus  int
 }
 
 func NewServer() *NfeServer {
@@ -56,34 +61,71 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		n.processPostRequest(w, r)
 	case http.MethodGet:
 		n.processGetRequest(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 
 func (n *NfeServer) processPostRequest(w http.ResponseWriter, r *http.Request) {
-	// url := urlParser(r.URL.Path, r.Method)
+	url := urlParser(r.URL.Path, r.Method)
+	if url != "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Printf("Bad URL: %s", url)
+		return
+	}
 
 	body, err := requestBodyParser(r)
 	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
 		fmt.Printf("Error parsing request body: %s", err)
+		return
 	}
 
-	var jsonRequest JsonGetRequest
-	err = jsonRequestParser(body, &jsonRequest) // ? why is this necessary?
+	jsonRequest := JsonPostRequest{}
+	err = jsonRequestParser(body, &jsonRequest)
 	if err != nil {
 		fmt.Printf("Error parsing JSON: %s", err)
+		w.WriteHeader(http.StatusNotAcceptable)
+		return
 	}
 
+	// TODO: xmlParser should be call inside *_nfe_store files
 	xmlParsed, err := xmlParser([]byte(jsonRequest.XML))
 	if err != nil {
 		fmt.Printf("Error parsing XML: %s", err)
+		w.WriteHeader(http.StatusNotAcceptable)
+		return
 	}
 
-	fmt.Println("Id: ", xmlParsed.NFe.InfNFe.Id)
-	fmt.Println("CNPJ: ", xmlParsed.NFe.InfNFe.Emit.CNPJ)
-	fmt.Println("Total: ", xmlParsed.NFe.InfNFe.Total.ICMSTot.VNF)
+	// TODO: ReceiverNfe should receive a JsonPostRequest and return a JsonPostResponse and a error from ResponserNfe (response, err)
+	err = n.storage.ReceiverNfe(xmlParsed)
+	if err != nil {
+		fmt.Printf("Error storing NFe: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	n.dispatchPostResponse()
+	// TODO: ResponserNfe should be call by ReceriverNfe return and returns a JsonPostResponse and a error
+	response, err := n.storage.ResponserNfe(xmlParsed)
+	if err != nil {
+		fmt.Printf("Error receive response NFe: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// fmt.Println("Id: ", xmlParsed.NFe.InfNFe.Id)
+	// fmt.Println("CNPJ: ", xmlParsed.NFe.InfNFe.Emit.CNPJ)
+	// fmt.Println("Total: ", xmlParsed.NFe.InfNFe.Total.ICMSTot.VNF)
+
+	err = n.dispatchPostResponse(response)
+	if err != nil {
+		fmt.Printf("Error dispatch response NFe: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
+
+func (n *NfeServer) dispatchPostResponse(response JsonPostResponse) error { return nil }
 
 func (n *NfeServer) processGetRequest(w http.ResponseWriter, r *http.Request) {
 	n.dispatchGetResponse()
@@ -91,9 +133,7 @@ func (n *NfeServer) processGetRequest(w http.ResponseWriter, r *http.Request) {
 
 func (n *NfeServer) dispatchGetResponse() {}
 
-func (n *NfeServer) dispatchPostResponse() {}
-
-// todo: move to a separate file
+// TODO: move to a separate file
 
 func urlParser(url string, method string) string {
 	switch method {
