@@ -2,13 +2,13 @@
 
 ## Tarefa 1.2
 
-- Fazer um servidor HTTP que receba um XML (NFe v4.00) via POST
+- [X] Fazer um servidor HTTP que receba um XML (NFe v4.00) via POST
   - Retornar em json se o documento foi criado ou se já existia
-- Parsear XML numa estrutura que contém os seguintes campos
+- [X] Parsear XML numa estrutura que contém os seguintes campos
   - ID `nfeProc→NFe→infNFe→Id (como atributo)`
   - CNPJ do Emissor `nfeProc→NFe→infNFe→emit→CNPJ`
   - Valor total da nota `nfeProc→NFe→infNFe→total→ICMSTot→vNF`
-- Salvar estrutura em memória usando mapa
+- [X] Salvar estrutura em memória usando mapa
 
 **Material de apoio:** [servidor HTTP](https://pkg.go.dev/net/http), [parser de XML](https://pkg.go.dev/encoding/xml), [banco em memória usando mapa](https://gobyexample.com/maps)
 
