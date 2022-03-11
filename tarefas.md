@@ -32,4 +32,5 @@
   
 ## Correções
 
-- Request Miliestone 1 no Postman: `localhost:8000/nfse/v1` -> `localhost:8000/nfe/v1`
+- Url da Request Miliestone 1 no Postman: `localhost:8000/nfse/v1` -> `localhost:8000/nfe/v1`
+- Criar Request de Get by Id para tarefa 1.3

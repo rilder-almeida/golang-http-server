@@ -2,12 +2,6 @@ package main
 
 import "encoding/xml"
 
-// type XmlDocument struct {
-// 	Id    string `xml:"nfeProc>NFe>infNFe->Id"`
-// 	Cnpj  string `xml:"nfeProc>NFe>infNFe>emit>CNPJ"`
-// 	Total string `xml:"nfeProc>NFe>infNFe>total>ICMSTot>vNF"`
-// }
-
 type XmlDocument struct {
 	XMLName xml.Name `xml:"nfeProc"`
 	NFe     NFeField `xml:"NFe"`

@@ -2,35 +2,40 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type NfeStore interface {
-	//post method
-	PostRequestReceiver(JsonPostRequest) (JsonPostResponse, error)
-	PostRequestResponder(string, []byte, int) JsonPostResponse
-	//get method
-	// GetRequestReceiver(JsonGetRequest) (JsonGetResponse, error)
-	// GetRequestResponder(string, []byte, int) (JsonGetResponse, error)
-	//assert utils
+	PostRequestReceiver(JsonRequest) (JsonResponse, error)
+	GetRequestReceiver(JsonGetRequest) (JsonResponse, error)
+	RequestResponder(string, []byte, int) JsonResponse
+	//utils
 	AssertIdIsNew(string) bool
-	//repository utils
-	StoreNfe(JsonPostRequest) ([]byte, error)
-	GetNfeById()
+	StoreNfe(JsonRequest) ([]byte, error)
+	GetNfeById(string) ([]byte, error)
 	MakeJsonNfeIsNew(bool) []byte
+}
+
+type JsonRequest struct {
+	XML string `json:"XML"`
+}
+
+type JsonResponse struct {
+	contentType string
+	bodyData    []byte
+	httpStatus  int
+}
+
+type JsonGetRequest struct {
+	Id string `json:"id"`
 }
 
 type NfeServer struct {
 	storage NfeStore
-}
-type JsonPostRequest struct {
-	XML string `json:"XML"`
-}
-type JsonPostResponse struct {
-	contentType string
-	bodyData    []byte
-	httpStatus  int
 }
 
 func NewServer() *NfeServer {
@@ -54,8 +59,8 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		n.processPostRequest(w, r)
-	// case http.MethodGet: // TODO: must be implemented
-	// 	n.processGetRequest(w, r)
+	case http.MethodGet:
+		n.processGetRequest(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
@@ -69,15 +74,15 @@ func (n *NfeServer) processPostRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, err := requestBodyParser(r.Body)
+	body, err := requestBodyReader(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusNotAcceptable)
 		fmt.Printf("Error parsing request body: %s", err)
 		return
 	}
 
-	jsonRequest := JsonPostRequest{}
-	err = jsonRequestParser(body, &jsonRequest)
+	jsonRequest := JsonRequest{}
+	err = FromJsonRequestParser(body, &jsonRequest)
 	if err != nil {
 		fmt.Printf("Error parsing JSON: %s", err)
 		w.WriteHeader(http.StatusNotAcceptable)
@@ -91,7 +96,7 @@ func (n *NfeServer) processPostRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = n.dispatchPostResponse(w, response)
+	err = n.dispatchResponse(w, response)
 	if err != nil {
 		fmt.Printf("Error dispatch response NFe: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -99,7 +104,7 @@ func (n *NfeServer) processPostRequest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (n *NfeServer) dispatchPostResponse(w http.ResponseWriter, response JsonPostResponse) error {
+func (n *NfeServer) dispatchResponse(w http.ResponseWriter, response JsonResponse) error {
 	w.Header().Set("Content-Type", response.contentType)
 	w.WriteHeader(response.httpStatus)
 	_, err := w.Write(response.bodyData)
@@ -109,6 +114,59 @@ func (n *NfeServer) dispatchPostResponse(w http.ResponseWriter, response JsonPos
 	return nil
 }
 
-// func (n *NfeServer) processGetRequest(w http.ResponseWriter, r *http.Request) {} // TODO: must be implemented
+func (n *NfeServer) processGetRequest(w http.ResponseWriter, r *http.Request) {
+	url := urlParser(r.URL.Path, r.Method)
+	if url != "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Printf("Bad URL: %s", url)
+		return
+	}
 
-// func (n *NfeServer) dispatchGetResponse() {} // TODO: must be implemented
+	body, err := requestBodyReader(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+		fmt.Printf("Error parsing request body: %s", err)
+		return
+	}
+
+	jsonRequest := JsonGetRequest{}
+	err = FromJsonRequestParser(body, &jsonRequest)
+	if err != nil {
+		fmt.Printf("Error parsing JSON: %s", err)
+		w.WriteHeader(http.StatusNotAcceptable)
+		return
+	}
+
+	response, err := n.storage.GetRequestReceiver(jsonRequest)
+	if err != nil {
+		fmt.Printf("Error getting NFe: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = n.dispatchResponse(w, response)
+	if err != nil {
+		fmt.Printf("Error dispatch response NFe: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func urlParser(url string, method string) string {
+	switch method {
+	case "POST":
+		return strings.TrimPrefix(url, "/nfe/v1")
+
+	case "GET":
+		return strings.TrimPrefix(url, "/nfe/v1")
+	}
+	panic(fmt.Sprintf("Bad method: %s", method))
+}
+
+func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
+	body64, err := ioutil.ReadAll(bodyRequest)
+	if err != nil {
+		return nil, err
+	}
+	return body64, nil
+}
