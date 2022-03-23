@@ -6,19 +6,6 @@ import (
 	"net/http"
 )
 
-const (
-	POST_RESPONSE_CONTENT_TYPE = "application/json"
-)
-
-type NfeDocument struct {
-	RawXml         string      `json:"raw_xml"`
-	NfeXmlDocument XmlDocument `json:"nfe_xml_document"`
-}
-
-type JsonNfeIsNew struct {
-	IsNewNfe bool `json:"IsNewNfe"`
-}
-
 type inMemoryNfeStore struct {
 	store map[string]NfeDocument
 }
@@ -27,7 +14,7 @@ func NewInMemoryNfeStore() NfeStore {
 	return &inMemoryNfeStore{make(map[string]NfeDocument)}
 }
 
-func (i *inMemoryNfeStore) PostRequestReceiver(jsonRequest JsonRequest) (JsonResponse, error) {
+func (i *inMemoryNfeStore) PostRequestReceiver(jsonRequest JsonPostRequest) (JsonResponse, error) {
 	bodyData, err := i.StoreNfe(jsonRequest)
 
 	if err != nil {
@@ -60,7 +47,7 @@ func (i *inMemoryNfeStore) AssertIdIsNew(id string) bool {
 	return !ok
 }
 
-func (i *inMemoryNfeStore) StoreNfe(jsonRequest JsonRequest) ([]byte, error) {
+func (i *inMemoryNfeStore) StoreNfe(jsonRequest JsonPostRequest) ([]byte, error) {
 	xmlParsed, err := ToXmlParser([]byte(jsonRequest.XML))
 	if err != nil {
 		return []byte(""), fmt.Errorf("error parsing XML: %s", err)

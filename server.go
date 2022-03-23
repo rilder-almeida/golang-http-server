@@ -9,31 +9,6 @@ import (
 	"strings"
 )
 
-type NfeStore interface {
-	PostRequestReceiver(JsonRequest) (JsonResponse, error)
-	GetRequestReceiver(JsonGetRequest) (JsonResponse, error)
-	RequestResponder(string, []byte, int) JsonResponse
-	//utils
-	AssertIdIsNew(string) bool
-	StoreNfe(JsonRequest) ([]byte, error)
-	GetNfeById(string) ([]byte, error)
-	MakeJsonNfeIsNew(bool) []byte
-}
-
-type JsonRequest struct {
-	XML string `json:"XML"`
-}
-
-type JsonResponse struct {
-	contentType string
-	bodyData    []byte
-	httpStatus  int
-}
-
-type JsonGetRequest struct {
-	Id string `json:"id"`
-}
-
 type NfeServer struct {
 	storage NfeStore
 }
@@ -49,8 +24,8 @@ func getNfeStore() NfeStore {
 	switch envVar {
 	case "IN_MEMORY":
 		return NewInMemoryNfeStore()
-		// case "JSON": // TODO: must be implemented
-		// 	return NewInJsonNfeStore()
+	case "IN_JSON":
+		return NewInJsonNfeStore()
 	}
 	panic(fmt.Sprintf("Bad environment variable value: %s", envVar))
 }
@@ -81,7 +56,7 @@ func (n *NfeServer) processPostRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonRequest := JsonRequest{}
+	jsonRequest := JsonPostRequest{}
 	err = FromJsonRequestParser(body, &jsonRequest)
 	if err != nil {
 		fmt.Printf("Error parsing JSON: %s", err)

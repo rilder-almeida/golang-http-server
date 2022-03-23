@@ -31,7 +31,11 @@ func (j *jsonPlayerStore) RecordWin(name string) {
 		}
 	}
 	j.Store = append(j.Store, player{name, 1})
-	ToJsonFile(j.jsonFile, j)
+
+	err = ToJsonFile(j.jsonFile, j)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (j *jsonPlayerStore) GetPlayerScore(name string) int {

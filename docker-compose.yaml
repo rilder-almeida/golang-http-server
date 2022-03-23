@@ -6,7 +6,8 @@ services:
         environment:
             LOG_LEVEL: "DEBUG"
             LOG_HUMAN: "true"
-            NFE_STORE: "IN_MEMORY"
+            NFE_STORE: "IN_JSON"
+            # NFE_STORE: "IN_MEMORY"
         ports:
           - 8000:8000
         volumes:

@@ -14,9 +14,21 @@
 
 ## Tarefa 1.3
 
-- Fazer o servidor HTTP devolver os dados de um XML via GET, através de seu ID
+- [X] Fazer o servidor HTTP devolver os dados de um XML via GET, através de seu ID
 
 **Material de apoio:** [servidor HTTP](https://pkg.go.dev/net/http)
+
+## Tarefa 1.4
+
+- [ ] Criar testes em tabela para o banco em memória e para o parser de XML
+
+**Material de apoio:** [teste em tabela](https://dave.cheney.net/2019/05/07/prefer-table-driven-tests)
+
+## Tarefa 2.1
+
+- [X] Criar uma implementação que salva e recupera as informações de um arquivo. Não apagar a implementação em memória, o programa tem que funcionar da mesma forma mudando somente a inicialização do banco.
+
+**Material de apoio:** [interface](https://gobyexample.com/interfaces), [manipulação de arquivo](https://pkg.go.dev/os)
 
 ## Dúvidas
 
