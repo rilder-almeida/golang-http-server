@@ -24,14 +24,6 @@ func (i *inMemoryNfeStore) PostRequestReceiver(jsonRequest JsonPostRequest) (Jso
 	return i.RequestResponder(POST_RESPONSE_CONTENT_TYPE, bodyData, http.StatusOK), nil
 }
 
-func (i *inMemoryNfeStore) RequestResponder(contentType string, bodyData []byte, httpStatus int) JsonResponse {
-	return JsonResponse{
-		contentType: contentType,
-		bodyData:    bodyData,
-		httpStatus:  httpStatus,
-	}
-}
-
 func (i *inMemoryNfeStore) GetRequestReceiver(jsonRequest JsonGetRequest) (JsonResponse, error) {
 	nfeDoc, err := i.GetNfeById(jsonRequest.Id)
 
@@ -40,6 +32,14 @@ func (i *inMemoryNfeStore) GetRequestReceiver(jsonRequest JsonGetRequest) (JsonR
 	}
 
 	return i.RequestResponder(POST_RESPONSE_CONTENT_TYPE, nfeDoc, http.StatusOK), nil
+}
+
+func (i *inMemoryNfeStore) RequestResponder(contentType string, bodyData []byte, httpStatus int) JsonResponse {
+	return JsonResponse{
+		contentType: contentType,
+		bodyData:    bodyData,
+		httpStatus:  httpStatus,
+	}
 }
 
 func (i *inMemoryNfeStore) AssertIdIsNew(id string) bool {
