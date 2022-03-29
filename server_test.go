@@ -1,35 +1,48 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
 type StubNfeStoreInMemory struct {
-	store     map[string]NfeDocument
-	postCalls []string
-	getCalls  []string
+	store        map[string]NfeDocument
+	postRequests [][]byte
+	getRequests  [][]byte
+	responses    [][]byte
 }
 
-type StubNfeDocument struct {
-	RawXml         string      `json:"raw_xml"`
-	NfeXmlDocument XmlDocument `json:"nfe_xml_document"`
+func (s *StubNfeStoreInMemory) PostRequestReceiver(jsonRequest JsonPostRequest) (JsonResponse, error) {
+	bodyData, err := s.StoreNfe(jsonRequest)
+
+	s.postRequests = append(s.postRequests, bodyData)
+
+	if err != nil {
+		return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, []byte(""), http.StatusNotAcceptable), err
+	}
+
+	return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, bodyData, http.StatusOK), nil
+
 }
 
-// teste 2
+func (s *StubNfeStoreInMemory) GetRequestReceiver(jsonRequest JsonGetRequest) (JsonResponse, error) {
+	nfeDoc, err := s.GetNfeById(jsonRequest.Id)
 
-func (s *StubNfeStoreInMemory) PostRequestReceiver(j JsonPostRequest) (JsonResponse, error) {
-	s.postCalls = append(s.postCalls, j.XML)
-	return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, []byte(j.XML), http.StatusOK)
-}
+	s.getRequests = append(s.getRequests, nfeDoc)
 
-func (s *StubNfeStoreInMemory) GetRequestReceiver(j JsonGetRequest) (JsonResponse, error) {
-	s.getCalls = append(s.getCalls, j.Id)
-	return s.RequestResponder(GET_RESPONSE_CONTENT_TYPE, []byte(j.Id), http.StatusOK)
+	if err != nil {
+		return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, []byte(""), http.StatusNotFound), err
+	}
+
+	return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, nfeDoc, http.StatusOK), nil
+
 }
 
 func (s *StubNfeStoreInMemory) RequestResponder(contentType string, bodyData []byte, httpStatus int) JsonResponse {
+	s.responses = append(s.responses, bodyData)
 	return JsonResponse{
 		contentType: contentType,
 		bodyData:    bodyData,
@@ -42,45 +55,66 @@ func (s *StubNfeStoreInMemory) AssertIdIsNew(id string) bool {
 	return !ok
 }
 
+func (s *StubNfeStoreInMemory) StoreNfe(jsonRequest JsonPostRequest) ([]byte, error) {
+	xmlParsed, err := ToXmlParser([]byte(jsonRequest.XML))
+	if err != nil {
+		return []byte(""), fmt.Errorf("error parsing XML: %s", err)
+	}
+
+	if s.AssertIdIsNew(xmlParsed.NFe.InfNFe.Id) {
+		s.store[xmlParsed.NFe.InfNFe.Id] = NfeDocument{RawXml: jsonRequest.XML, NfeXmlDocument: xmlParsed}
+		return s.MakeJsonNfeIsNew(true), nil
+	}
+
+	return s.MakeJsonNfeIsNew(false), nil
+}
+
+func (s *StubNfeStoreInMemory) GetNfeById(id string) ([]byte, error) {
+	if s.AssertIdIsNew(id) {
+		return []byte(""), fmt.Errorf("NFe with id %s not found", id)
+	}
+
+	return json.Marshal(s.store[id].NfeXmlDocument)
+}
+
+func (s *StubNfeStoreInMemory) MakeJsonNfeIsNew(status bool) []byte {
+	data, err := json.Marshal(JsonNfeIsNew{IsNewNfe: status})
+	if err != nil {
+		return []byte("")
+	}
+	return data
+}
+
+// server requests
+
+func newFakeRequest(method string, url string, body string) *http.Request {
+	jsonData := bytes.NewBuffer([]byte(body))
+
+	req, err := http.NewRequest(method, url, jsonData)
+	if err != nil {
+		panic(err)
+	}
+	return req
+}
+
+// TODO implement assertitions
+
+func assertStatus(t testing.TB, got, want int) {}
+
+func assertRequestBody(t testing.TB, got, want string) {}
+
+func assertResponseBody(t testing.TB, got, want string) {}
+
 func TestPOSTNfeinMemory(t *testing.T) {
 	store := StubNfeStoreInMemory{
 		map[string]NfeDocument{},
 		nil,
 		nil,
+		nil,
 	}
 	server := &NfeServer{&store}
 
-	t.Run("returns http status code 201", func(t *testing.T) {
-		request := newPostNfeRequest("<xml>")
-		response := httptest.NewRecorder()
+	// create table tests here
 
-		server.ServeHTTP(response, request)
-
-		assertStatus(t, response.Code, http.StatusCreated)
-	})
-
-	t.Run("returns the content type as application/json", func(t *testing.T) {
-		request := newPostNfeRequest("<xml>")
-		response := httptest.NewRecorder()
-
-		server.ServeHTTP(response, request)
-
-		assertContentType(t, response.Header().Get("Content-Type"), "application/json")
-	})
-
-	t.Run("creates a new nfe document", func(t *testing.T) {
-		request := newPostNfeRequest("<xml>")
-		response := httptest.NewRecorder()
-
-		server.ServeHTTP(response, request)
-
-		assertStatus(t, response.Code, http.StatusCreated)
-		assertResponseBody(t, response.Body.String(), `{"raw_xml":"<xml>","nfe_xml_document":{"XMLName":{"Space":"","Local":"nfeProc"},"NFe":{"XMLName":{"Space":"","Local":"NFe"},"InfNFe":{"XMLName":{"Space":"","Local":"infNFe"},"Id":"","Emit":{"XMLName":{"Space":"","Local":"emit"},"CNPJ":""},"Total":{"XMLName":{"Space":"","Local":"total"},"ICMSTot":{"XMLName":{"Space":"","Local":"ICMSTot"},"VNF":""}}}}}}`)
-	})
-
-	t.Run("returns a 500 internal server error if the xml is invalid", func(t *testing.T) {
-		request := newPostNfeRequest("<xml>")
-		response := httptest.NewRecorder()
-
-	})
+	// t.Run tests here
 }
