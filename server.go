@@ -51,8 +51,8 @@ func (n *NfeServer) processPostRequest(w http.ResponseWriter, r *http.Request) {
 
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusNotAcceptable)
 		fmt.Printf("Error parsing request body: %s", err)
+		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 

@@ -2,23 +2,40 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
 type StubNfeStoreInMemory struct {
 	store        map[string]NfeDocument
-	postRequests [][]byte
-	getRequests  [][]byte
-	responses    [][]byte
+	postRequests int
+	getRequests  int
+	responses    int
 }
+
+type StubPostRequestJson struct {
+	XML string `json:"XML"`
+}
+
+type tableTest struct {
+	intend                 string
+	request                *http.Request
+	requestTimes           int
+	expectedResponseBody   []string
+	expectedResponseStatus []int
+}
+
+// StubNfeStoreInMemory methods
 
 func (s *StubNfeStoreInMemory) PostRequestReceiver(jsonRequest JsonPostRequest) (JsonResponse, error) {
 	bodyData, err := s.StoreNfe(jsonRequest)
 
-	s.postRequests = append(s.postRequests, bodyData)
+	s.postRequests = +1
 
 	if err != nil {
 		return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, []byte(""), http.StatusNotAcceptable), err
@@ -31,7 +48,7 @@ func (s *StubNfeStoreInMemory) PostRequestReceiver(jsonRequest JsonPostRequest) 
 func (s *StubNfeStoreInMemory) GetRequestReceiver(jsonRequest JsonGetRequest) (JsonResponse, error) {
 	nfeDoc, err := s.GetNfeById(jsonRequest.Id)
 
-	s.getRequests = append(s.getRequests, nfeDoc)
+	s.getRequests = +1
 
 	if err != nil {
 		return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, []byte(""), http.StatusNotFound), err
@@ -42,7 +59,8 @@ func (s *StubNfeStoreInMemory) GetRequestReceiver(jsonRequest JsonGetRequest) (J
 }
 
 func (s *StubNfeStoreInMemory) RequestResponder(contentType string, bodyData []byte, httpStatus int) JsonResponse {
-	s.responses = append(s.responses, bodyData)
+	s.responses = +1
+
 	return JsonResponse{
 		contentType: contentType,
 		bodyData:    bodyData,
@@ -87,34 +105,148 @@ func (s *StubNfeStoreInMemory) MakeJsonNfeIsNew(status bool) []byte {
 
 // server requests
 
-func newFakeRequest(method string, url string, body string) *http.Request {
-	jsonData := bytes.NewBuffer([]byte(body))
+func newFakePostRequest(method string, url string, jsonData StubPostRequestJson) *http.Request {
 
-	req, err := http.NewRequest(method, url, jsonData)
+	jsonDataBytes, err := json.Marshal(jsonData)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+	}
+
+	data := bytes.NewBuffer(jsonDataBytes)
+
+	req, err := http.NewRequest(method, url, data)
+	if err != nil {
+		fmt.Println(err)
 	}
 	return req
 }
 
-// TODO implement assertitions
+func readFileToStubPostRequestJson(fileName string) (StubPostRequestJson, error) {
+	var jsonData StubPostRequestJson
+	jsonFileData32, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		return jsonData, err
+	}
 
-func assertStatus(t testing.TB, got, want int) {}
+	jsonFileData := []byte(base64.StdEncoding.EncodeToString(jsonFileData32))
+	if err != nil {
+		return jsonData, err
+	}
 
-func assertRequestBody(t testing.TB, got, want string) {}
+	jsonData.XML = string(jsonFileData)
 
-func assertResponseBody(t testing.TB, got, want string) {}
+	return jsonData, nil
+}
+
+func getValidStubPostRequestJson() StubPostRequestJson {
+	stubRequest, err := readFileToStubPostRequestJson("./test_data/valid_nfe.xml")
+	if err != nil {
+		fmt.Println(err)
+	}
+	return stubRequest
+}
+
+func getInvalidStubPostRequestJson() StubPostRequestJson {
+	stubRequest, err := readFileToStubPostRequestJson("./test_data/invalid_nfe.xml")
+	if err != nil {
+		fmt.Println(err)
+	}
+	return stubRequest
+}
+
+// assertions
+
+func assertStatus(t testing.TB, actual, expected int) {
+	if actual != expected {
+		t.Errorf("expected status %d, got %d", expected, actual)
+	}
+}
+
+func assertResponseBody(t testing.TB, actual, expected string) {
+	if actual != expected {
+		t.Errorf("expected body %s, got %s", expected, actual)
+	}
+}
+
+func assertRequestTimes(t testing.TB, actual, expected int) {
+	if actual != expected {
+		t.Errorf("expected request %d times, got %d", expected, actual)
+	}
+}
+
+// Table tests
+
+var validStubPostRequestJson = getValidStubPostRequestJson()
+
+var invalidStubPostRequestJson = getInvalidStubPostRequestJson()
+
+var postTableTests = []tableTest{
+	{
+		intend: "single POST request with valid XML",
+		request: newFakePostRequest(
+			"POST",
+			"http://localhost:8080/nfe/v1",
+			validStubPostRequestJson,
+		),
+		requestTimes:           1,
+		expectedResponseBody:   []string{`{"IsNewNfe":true}`},
+		expectedResponseStatus: []int{http.StatusOK},
+	},
+	{
+		intend: "multiple POST requests with valid XML",
+		request: newFakePostRequest(
+			"POST",
+			"http://localhost:8080/nfe/v1",
+			validStubPostRequestJson,
+		),
+		requestTimes: 3,
+		expectedResponseBody: []string{
+			`{"IsNewNfe":true}`,
+			`{"IsNewNfe":false}`,
+			`{"IsNewNfe":false}`,
+		},
+		expectedResponseStatus: []int{
+			http.StatusOK,
+			http.StatusOK,
+			http.StatusOK,
+		},
+	},
+	{
+		intend: "single POST request with invalid XML",
+		request: newFakePostRequest(
+			"POST",
+			"http://localhost:8080/nfe/v1",
+			invalidStubPostRequestJson,
+		),
+		requestTimes:           1,
+		expectedResponseBody:   []string{``},
+		expectedResponseStatus: []int{http.StatusInternalServerError},
+	},
+}
+
+// NfeinMemoryServer tests
 
 func TestPOSTNfeinMemory(t *testing.T) {
-	store := StubNfeStoreInMemory{
-		map[string]NfeDocument{},
-		nil,
-		nil,
-		nil,
+	for _, tt := range postTableTests {
+
+		t.Run(tt.intend, func(t *testing.T) {
+			store := &StubNfeStoreInMemory{make(map[string]NfeDocument), 0, 0, 0}
+			server := &NfeServer{store}
+			for j := 0; j < tt.requestTimes; j++ {
+				response := httptest.NewRecorder()
+
+				server.ServeHTTP(response, tt.request)
+
+				assertResponseBody(t, response.Body.String(), tt.expectedResponseBody[j])
+
+				assertStatus(t, response.Code, tt.expectedResponseStatus[j])
+			}
+
+			assertRequestTimes(t, store.postRequests, tt.requestTimes)
+
+			assertRequestTimes(t, store.responses, tt.requestTimes)
+
+		})
+
 	}
-	server := &NfeServer{&store}
-
-	// create table tests here
-
-	// t.Run tests here
 }
