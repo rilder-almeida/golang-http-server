@@ -20,7 +20,7 @@
 
 ## Tarefa 1.4
 
-- [ ] Criar testes em tabela para o banco em memória e para o parser de XML
+- [X] Criar testes em tabela para o banco em memória e para o parser de XML
 
 **Material de apoio:** [teste em tabela](https://dave.cheney.net/2019/05/07/prefer-table-driven-tests)
 
@@ -35,6 +35,9 @@
 - [X] Como realizar um request com um xml ou json no body pelo Postman? [Resposta](https://stackoverflow.com/questions/47295675/how-do-i-post-xml-data-to-a-webservice-with-postman)
 - [X] Como enviar um response com um xml ou json no body pela aplicação? [Resposta](https://golangbyexample.com/json-response-body-http-go/)
 - [X] Como criar a estrutura de uma entidade para documentos XML? [Resposta](https://tutorialedge.net/golang/parsing-xml-with-golang/)
+- [X] Como realizar o encoding e decoding de base32 para base64? [Resposta](https://golangdocs.com/base64-encoding-decoding-golang)
+- [X] Como usar o package embed para carregar os arquivos para testes em tabela? [Resposta](https://pkg.go.dev/embed)
+- [X] Como fazer a leitura do body de uma request? [Resposta](https://pkg.go.dev/io/ioutil#example-ReadAll)
 
 ## Sugestões
 
