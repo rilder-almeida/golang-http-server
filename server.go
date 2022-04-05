@@ -140,6 +140,8 @@ func urlParser(url string, method string) string {
 
 func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 	body64, err := ioutil.ReadAll(bodyRequest)
+	defer bodyRequest.Close()
+
 	if err != nil {
 		return nil, err
 	}

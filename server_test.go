@@ -5,10 +5,15 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	_ "embed"
+)
+
+const (
+	URL_API = "http://localhost:8080/nfe/v1"
 )
 
 type StubNfeStoreInMemory struct {
@@ -22,33 +27,55 @@ type StubPostRequestJson struct {
 	XML string `json:"XML"`
 }
 
+type StubGetRequestJson struct {
+	Id string `json:"id"`
+}
+
+type fakeRequest struct {
+	method string
+	url    string
+	body   []byte
+}
+
 type tableTest struct {
 	intend                 string
-	request                *http.Request
-	requestTimes           int
+	fakeRequests           []fakeRequest
 	expectedResponseBody   []string
 	expectedResponseStatus []int
 }
 
+//go:embed test_data/valid_nfe.xml
+var valid_nfe_xml []byte
+
+//go:embed test_data/invalid_nfe.xml
+var invalid_nfe_xml []byte
+
+//go:embed test_data/existent_valid_id.json
+var existent_valid_id_json []byte
+
+//go:embed test_data/non_existent_valid_id.json
+var non_existent_valid_id_json []byte
+
+//go:embed test_data/invalid_id.json
+var invalid_id_json []byte
+
 // StubNfeStoreInMemory methods
 
 func (s *StubNfeStoreInMemory) PostRequestReceiver(jsonRequest JsonPostRequest) (JsonResponse, error) {
+	s.postRequests += 1
+
 	bodyData, err := s.StoreNfe(jsonRequest)
-
-	s.postRequests = +1
-
 	if err != nil {
 		return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, []byte(""), http.StatusNotAcceptable), err
 	}
 
 	return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, bodyData, http.StatusOK), nil
-
 }
 
 func (s *StubNfeStoreInMemory) GetRequestReceiver(jsonRequest JsonGetRequest) (JsonResponse, error) {
-	nfeDoc, err := s.GetNfeById(jsonRequest.Id)
+	s.getRequests += 1
 
-	s.getRequests = +1
+	nfeDoc, err := s.GetNfeById(jsonRequest.Id)
 
 	if err != nil {
 		return s.RequestResponder(POST_RESPONSE_CONTENT_TYPE, []byte(""), http.StatusNotFound), err
@@ -59,7 +86,7 @@ func (s *StubNfeStoreInMemory) GetRequestReceiver(jsonRequest JsonGetRequest) (J
 }
 
 func (s *StubNfeStoreInMemory) RequestResponder(contentType string, bodyData []byte, httpStatus int) JsonResponse {
-	s.responses = +1
+	s.responses += 1
 
 	return JsonResponse{
 		contentType: contentType,
@@ -105,49 +132,43 @@ func (s *StubNfeStoreInMemory) MakeJsonNfeIsNew(status bool) []byte {
 
 // server requests
 
-func newFakePostRequest(method string, url string, jsonData StubPostRequestJson) *http.Request {
+func newFakeRequest(request fakeRequest) *http.Request {
 
-	jsonDataBytes, err := json.Marshal(jsonData)
-	if err != nil {
-		fmt.Println(err)
+	switch request.method {
+	case "POST":
+		stubRequest := getStubPostRequestJson(request)
+		jsonDataBytes, err := json.Marshal(stubRequest)
+		if err != nil {
+			fmt.Println(err)
+		}
+		req, err := http.NewRequest(request.method, request.url, bytes.NewBuffer(jsonDataBytes))
+		if err != nil {
+			fmt.Println(err)
+		}
+		return req
+	case "GET":
+		stubRequest := getStubGetRequestJson(request)
+		jsonDataBytes, err := json.Marshal(stubRequest)
+		if err != nil {
+			fmt.Println(err)
+		}
+		req, err := http.NewRequest(request.method, request.url, bytes.NewBuffer(jsonDataBytes))
+		if err != nil {
+			fmt.Println(err)
+		}
+		return req
+	default:
+		return httptest.NewRequest(request.method, request.url, nil)
 	}
-
-	data := bytes.NewBuffer(jsonDataBytes)
-
-	req, err := http.NewRequest(method, url, data)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return req
 }
 
-func readFileToStubPostRequestJson(fileName string) (StubPostRequestJson, error) {
-	var jsonData StubPostRequestJson
-	jsonFileData32, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		return jsonData, err
-	}
-
-	jsonFileData := []byte(base64.StdEncoding.EncodeToString(jsonFileData32))
-	if err != nil {
-		return jsonData, err
-	}
-
-	jsonData.XML = string(jsonFileData)
-
-	return jsonData, nil
+func getStubPostRequestJson(request fakeRequest) StubPostRequestJson {
+	return StubPostRequestJson{XML: base64.StdEncoding.EncodeToString(request.body)}
 }
 
-func getValidStubPostRequestJson() StubPostRequestJson {
-	stubRequest, err := readFileToStubPostRequestJson("./test_data/valid_nfe.xml")
-	if err != nil {
-		fmt.Println(err)
-	}
-	return stubRequest
-}
-
-func getInvalidStubPostRequestJson() StubPostRequestJson {
-	stubRequest, err := readFileToStubPostRequestJson("./test_data/invalid_nfe.xml")
+func getStubGetRequestJson(request fakeRequest) StubGetRequestJson {
+	var stubRequest StubGetRequestJson
+	err := json.Unmarshal(request.body, &stubRequest)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -176,30 +197,22 @@ func assertRequestTimes(t testing.TB, actual, expected int) {
 
 // Table tests
 
-var validStubPostRequestJson = getValidStubPostRequestJson()
-
-var invalidStubPostRequestJson = getInvalidStubPostRequestJson()
-
-var postTableTests = []tableTest{
+var tableTests = []tableTest{
 	{
 		intend: "single POST request with valid XML",
-		request: newFakePostRequest(
-			"POST",
-			"http://localhost:8080/nfe/v1",
-			validStubPostRequestJson,
-		),
-		requestTimes:           1,
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+		},
 		expectedResponseBody:   []string{`{"IsNewNfe":true}`},
 		expectedResponseStatus: []int{http.StatusOK},
 	},
 	{
 		intend: "multiple POST requests with valid XML",
-		request: newFakePostRequest(
-			"POST",
-			"http://localhost:8080/nfe/v1",
-			validStubPostRequestJson,
-		),
-		requestTimes: 3,
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+		},
 		expectedResponseBody: []string{
 			`{"IsNewNfe":true}`,
 			`{"IsNewNfe":false}`,
@@ -213,38 +226,172 @@ var postTableTests = []tableTest{
 	},
 	{
 		intend: "single POST request with invalid XML",
-		request: newFakePostRequest(
-			"POST",
-			"http://localhost:8080/nfe/v1",
-			invalidStubPostRequestJson,
-		),
-		requestTimes:           1,
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+		},
 		expectedResponseBody:   []string{``},
 		expectedResponseStatus: []int{http.StatusInternalServerError},
+	},
+	{
+		intend: "multiple POST requests with invalid XML",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+		},
+		expectedResponseBody: []string{
+			``,
+			``,
+			``,
+		},
+		expectedResponseStatus: []int{
+			http.StatusInternalServerError,
+			http.StatusInternalServerError,
+			http.StatusInternalServerError,
+		},
+	},
+	{
+		intend: "single POST request with invalid XML and valid XML",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+		},
+		expectedResponseBody: []string{
+			``,
+			`{"IsNewNfe":true}`,
+		},
+		expectedResponseStatus: []int{
+			http.StatusInternalServerError,
+			http.StatusOK,
+		},
+	},
+	{
+		intend: "single POST request with valid XML and invalid XML",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+		},
+		expectedResponseBody: []string{
+			`{"IsNewNfe":true}`,
+			``,
+		},
+		expectedResponseStatus: []int{
+			http.StatusOK,
+			http.StatusInternalServerError,
+		},
+	},
+	{
+		intend: "single POST request with valid XML and single GET request with valid and existent Id",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+			{method: "GET", url: URL_API, body: existent_valid_id_json},
+		},
+		expectedResponseBody: []string{
+			`{"IsNewNfe":true}`,
+			`{"NFe":{"InfNFe":{"Id":"NFe35200664902000000160550010000119461000000014","Emit":{"CNPJ":"64902000000160"},"Total":{"ICMSTot":{"VNF":"5686.00"}}}}}`,
+		},
+		expectedResponseStatus: []int{
+			http.StatusOK,
+			http.StatusOK,
+		},
+	},
+	{
+		intend: "single POST request with valid XML and single GET request with valid and non-existent Id",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+			{method: "GET", url: URL_API, body: non_existent_valid_id_json},
+		},
+		expectedResponseBody: []string{
+			`{"IsNewNfe":true}`,
+			``,
+		},
+		expectedResponseStatus: []int{
+			http.StatusOK,
+			http.StatusInternalServerError,
+		},
+	},
+	{
+		intend: "single POST request with valid XML and single GET request with invalid Id",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: valid_nfe_xml},
+			{method: "GET", url: URL_API, body: invalid_id_json},
+		},
+		expectedResponseBody: []string{
+			`{"IsNewNfe":true}`,
+			``,
+		},
+		expectedResponseStatus: []int{
+			http.StatusOK,
+			http.StatusInternalServerError,
+		},
+	},
+	{
+		intend: "single POST request with invalid XML and single GET request with valid Id",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+			{method: "GET", url: URL_API, body: existent_valid_id_json},
+		},
+		expectedResponseBody: []string{
+			``,
+			``,
+		},
+		expectedResponseStatus: []int{
+			http.StatusInternalServerError,
+			http.StatusInternalServerError,
+		},
+	},
+	{
+		intend: "single POST request with invalid XML and single GET request with invalid Id",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+			{method: "GET", url: URL_API, body: invalid_id_json},
+		},
+		expectedResponseBody: []string{
+			``,
+			``,
+		},
+		expectedResponseStatus: []int{
+			http.StatusInternalServerError,
+			http.StatusInternalServerError,
+		},
+	},
+	{
+		intend: "single POST request with invalid XML and single GET request with valid and non-existent Id",
+		fakeRequests: []fakeRequest{
+			{method: "POST", url: URL_API, body: invalid_nfe_xml},
+			{method: "GET", url: URL_API, body: non_existent_valid_id_json},
+		},
+		expectedResponseBody: []string{
+			``,
+			``,
+		},
+		expectedResponseStatus: []int{
+			http.StatusInternalServerError,
+			http.StatusInternalServerError,
+		},
 	},
 }
 
 // NfeinMemoryServer tests
 
-func TestPOSTNfeinMemory(t *testing.T) {
-	for _, tt := range postTableTests {
-
+func TestNfeinMemory(t *testing.T) {
+	for _, tt := range tableTests {
+		tt := tt
 		t.Run(tt.intend, func(t *testing.T) {
 			store := &StubNfeStoreInMemory{make(map[string]NfeDocument), 0, 0, 0}
 			server := &NfeServer{store}
-			for j := 0; j < tt.requestTimes; j++ {
-				response := httptest.NewRecorder()
+			for j := 0; j < len(tt.fakeRequests); j++ {
 
-				server.ServeHTTP(response, tt.request)
+				response := httptest.NewRecorder()
+				request := newFakeRequest(tt.fakeRequests[j])
+				server.ServeHTTP(response, request)
 
 				assertResponseBody(t, response.Body.String(), tt.expectedResponseBody[j])
-
 				assertStatus(t, response.Code, tt.expectedResponseStatus[j])
 			}
 
-			assertRequestTimes(t, store.postRequests, tt.requestTimes)
-
-			assertRequestTimes(t, store.responses, tt.requestTimes)
+			assertRequestTimes(t, store.postRequests+store.getRequests, len(tt.fakeRequests))
+			assertRequestTimes(t, store.responses, len(tt.fakeRequests))
 
 		})
 
