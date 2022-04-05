@@ -1,3 +1,2 @@
 golang-http-server
-players.json
-players_test.json
+docker-compose.yaml
