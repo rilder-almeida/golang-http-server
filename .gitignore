@@ -1,2 +1,3 @@
 golang-http-server
 docker-compose.yaml
+/test_data/*
