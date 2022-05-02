@@ -1,10 +1,9 @@
 package get
 
 import (
-	"github.com/golang-http-server/entities"
+	"github.com/golang-http-server/entities/nfe"
 )
 
 type Response struct {
-	RawXml         string               `json:"raw_xml"`
-	NfeXmlDocument entities.XmlDocument `json:"nfe_xml_document"`
+	NfeDocument nfe.NfeDocument `json:"nfe_document"`
 }

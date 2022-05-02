@@ -1,4 +1,4 @@
-package entities
+package xml
 
 import "encoding/xml"
 
