@@ -5,17 +5,17 @@ import (
 	"github.com/golang-http-server/services/get"
 )
 
-type inMemoryAdapter struct {
+type Adapter struct {
 	repository nfe.Repository
 }
 
-func NewInMemoryAdapter(repository nfe.Repository) get.GetGateway {
-	return &inMemoryAdapter{
+func NewAdapter(repository nfe.Repository) get.GetGateway {
+	return &Adapter{
 		repository: repository,
 	}
 }
 
-func (adapter *inMemoryAdapter) Processor(request get.Request) (get.Response, error) {
+func (adapter *Adapter) Processor(request get.Request) (get.Response, error) {
 	nfeDocument, err := adapter.receiver(request)
 	if err != nil {
 		return get.Response{}, err
@@ -23,7 +23,7 @@ func (adapter *inMemoryAdapter) Processor(request get.Request) (get.Response, er
 	return adapter.responder(nfeDocument), nil
 }
 
-func (adapter *inMemoryAdapter) receiver(request get.Request) (nfe.NfeDocument, error) {
+func (adapter *Adapter) receiver(request get.Request) (nfe.NfeDocument, error) {
 	nfeDocument, err := adapter.repository.FindByID(request.Id)
 	if err != nil {
 		return nfe.NfeDocument{}, err
@@ -31,7 +31,7 @@ func (adapter *inMemoryAdapter) receiver(request get.Request) (nfe.NfeDocument, 
 	return nfeDocument, nil
 }
 
-func (adapter *inMemoryAdapter) responder(nfeDocument nfe.NfeDocument) get.Response {
+func (adapter *Adapter) responder(nfeDocument nfe.NfeDocument) get.Response {
 	return get.Response{
 		NfeDocument: nfeDocument,
 	}

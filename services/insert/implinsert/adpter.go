@@ -8,17 +8,17 @@ import (
 	"github.com/golang-http-server/shared"
 )
 
-type inFileAdapter struct {
+type Adapter struct {
 	repository nfe.Repository
 }
 
-func NewInFileAdapter(repository nfe.Repository) insert.InsertGateway {
-	return &inFileAdapter{
+func NewAdapter(repository nfe.Repository) insert.InsertGateway {
+	return &Adapter{
 		repository: repository,
 	}
 }
 
-func (adapter *inFileAdapter) Processor(request insert.Request) (insert.Response, error) {
+func (adapter *Adapter) Processor(request insert.Request) (insert.Response, error) {
 	err := adapter.receiver(request)
 	if err != nil {
 		if err == fmt.Errorf("NFe already exists") {
@@ -29,7 +29,7 @@ func (adapter *inFileAdapter) Processor(request insert.Request) (insert.Response
 	return adapter.responder(true), nil
 }
 
-func (adapter *inFileAdapter) receiver(request insert.Request) error {
+func (adapter *Adapter) receiver(request insert.Request) error {
 	xmlDocument, err := shared.ToXmlDocument([]byte(request.XML))
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func (adapter *inFileAdapter) receiver(request insert.Request) error {
 	return nil
 }
 
-func (adapter *inFileAdapter) responder(isNewNfe bool) insert.Response {
+func (adapter *Adapter) responder(isNewNfe bool) insert.Response {
 	return insert.Response{
 		IsNewNfe: isNewNfe,
 	}
