@@ -25,9 +25,10 @@ func NewRepository(config impltnfe.Config) nfe.Repository {
 }
 
 func NewServer() *NfeServer {
+	repository := NewRepository(Config)
 	return &NfeServer{
-		GetService:    get.NewService(implget.NewAdapter(NewRepository(Config))),
-		InsertService: insert.NewService(implinsert.NewAdapter(NewRepository(Config))),
+		GetService:    get.NewService(implget.NewAdapter(repository)),
+		InsertService: insert.NewService(implinsert.NewAdapter(repository)),
 	}
 }
 
