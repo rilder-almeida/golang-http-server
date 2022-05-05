@@ -8,13 +8,14 @@ import (
 )
 
 type nfeInfileRepository struct {
-	store          nfe.NfeDocumentList
+	store nfe.NfeDocuments
+	// FIXME retirar store
 	json_file_path string
 }
 
 func NewNfeInfileRepository(json_file_path string) nfe.Repository {
 	return &nfeInfileRepository{
-		store:          make([]nfe.NfeDocument, 0),
+		store:          make(nfe.NfeDocuments, 0),
 		json_file_path: json_file_path,
 	}
 }
@@ -51,15 +52,17 @@ func (repository *nfeInfileRepository) loadInFileData() error {
 		return err
 	}
 
-	repository.store, err = shared.ToNfeDocumentList(data)
+	repository.store, err = shared.ToNfeDocuments(data)
 	if err != nil {
 		return err
 	}
 	return nil
+	// FIXME: return store, err
+	// não atribuir ao repository.store o valor de data
 }
 
 func (repository *nfeInfileRepository) saveInFileData() error {
-	data, err := shared.FromNfeDocumentList(repository.store)
+	data, err := shared.FromNfeDocuments(repository.store)
 	if err != nil {
 		return err
 	}

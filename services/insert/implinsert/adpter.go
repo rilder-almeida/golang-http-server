@@ -1,8 +1,6 @@
 package implinsert
 
 import (
-	"fmt"
-
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/services/insert"
 	"github.com/golang-http-server/shared"
@@ -21,7 +19,7 @@ func NewAdapter(repository nfe.Repository) insert.InsertGateway {
 func (adapter *Adapter) Processor(request insert.Request) (insert.Response, error) {
 	err := adapter.receiver(request)
 	if err != nil {
-		if err == fmt.Errorf("NFe already exists") {
+		if err == nfe.ErrAlreadyExists {
 			return adapter.responder(false), nil
 		}
 		return insert.Response{}, err
@@ -36,11 +34,11 @@ func (adapter *Adapter) receiver(request insert.Request) error {
 	}
 
 	_, err = adapter.repository.FindByID(xmlDocument.NFe.InfNFe.Id)
-	if err != fmt.Errorf("NFe not found") {
+	if err != nfe.ErrNotFound {
 		return err
 	}
-	if err == nil {
-		return fmt.Errorf("NFe already exists")
+	if err == nfe.ErrAlreadyExists {
+		return err
 	}
 
 	nfeDocument := nfe.NfeDocument{

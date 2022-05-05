@@ -3,6 +3,7 @@ package shared
 import (
 	"encoding/base64"
 	"encoding/json"
+	encodingXml "encoding/xml"
 
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/xml"
@@ -17,25 +18,25 @@ func ToNfeDocument(data []byte) (nfe.NfeDocument, error) {
 	return nfeDocument, nil
 }
 
-func FromNfeDocument(nfeDocument nfe.NfeDocument) ([]byte, error) {
-	data, err := json.Marshal(nfeDocument)
+// func FromNfeDocument(nfeDocument nfe.NfeDocument) ([]byte, error) {
+// 	data, err := json.Marshal(nfeDocument)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return data, nil
+// }
+
+func ToNfeDocuments(data []byte) (nfe.NfeDocuments, error) {
+	var NfeDocuments nfe.NfeDocuments
+	err := json.Unmarshal(data, &NfeDocuments)
 	if err != nil {
-		return nil, err
+		return nfe.NfeDocuments{}, err
 	}
-	return data, nil
+	return NfeDocuments, nil
 }
 
-func ToNfeDocumentList(data []byte) (nfe.NfeDocumentList, error) {
-	var nfeDocumentList nfe.NfeDocumentList
-	err := json.Unmarshal(data, &nfeDocumentList)
-	if err != nil {
-		return nfe.NfeDocumentList{}, err
-	}
-	return nfeDocumentList, nil
-}
-
-func FromNfeDocumentList(nfeDocumentList nfe.NfeDocumentList) ([]byte, error) {
-	data, err := json.Marshal(nfeDocumentList)
+func FromNfeDocuments(NfeDocuments nfe.NfeDocuments) ([]byte, error) {
+	data, err := json.Marshal(NfeDocuments)
 	if err != nil {
 		return nil, err
 	}
@@ -44,20 +45,20 @@ func FromNfeDocumentList(nfeDocumentList nfe.NfeDocumentList) ([]byte, error) {
 
 func ToXmlDocument(data []byte) (xml.XmlDocument, error) {
 	var xmlDocument xml.XmlDocument
-	err := json.Unmarshal(data, &xmlDocument)
+	err := encodingXml.Unmarshal(data, &xmlDocument)
 	if err != nil {
 		return xml.XmlDocument{}, err
 	}
 	return xmlDocument, nil
 }
 
-func FromXmlDocument(xmlDocument xml.XmlDocument) ([]byte, error) {
-	data, err := json.Marshal(xmlDocument)
-	if err != nil {
-		return nil, err
-	}
-	return data, nil
-}
+// func FromXmlDocument(xmlDocument xml.XmlDocument) ([]byte, error) {
+// 	data, err := json.Marshal(xmlDocument)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return data, nil
+// }
 
 func FromBase64ToBase32(data []byte) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(string(data))

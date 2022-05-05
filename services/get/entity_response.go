@@ -1,9 +1,7 @@
 package get
 
-import (
-	"github.com/golang-http-server/entities/nfe"
-)
+import "github.com/golang-http-server/entities/xml"
 
 type Response struct {
-	NfeDocument nfe.NfeDocument `json:"nfe_document"`
+	NfeXmlDocument xml.XmlDocument `json:"nfe_xml_document"`
 }

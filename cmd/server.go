@@ -10,8 +10,10 @@ import (
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/nfe/impltnfe"
 	"github.com/golang-http-server/services/get"
+	"github.com/golang-http-server/services/get/apiget"
 	"github.com/golang-http-server/services/get/implget"
 	"github.com/golang-http-server/services/insert"
+	"github.com/golang-http-server/services/insert/apiinsert"
 	"github.com/golang-http-server/services/insert/implinsert"
 )
 
@@ -21,11 +23,13 @@ type NfeServer struct {
 }
 
 func NewRepository(config impltnfe.Config) nfe.Repository {
+	fmt.Println("Creating repository")
 	return impltnfe.NewNfeRepository(config)
 }
 
 func NewServer() *NfeServer {
 	repository := NewRepository(Config)
+	fmt.Println("Creating server")
 	return &NfeServer{
 		GetService:    get.NewService(implget.NewAdapter(repository)),
 		InsertService: insert.NewService(implinsert.NewAdapter(repository)),
@@ -33,6 +37,7 @@ func NewServer() *NfeServer {
 }
 
 func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Request received")
 	switch r.Method {
 	case http.MethodPost:
 		n.processInsertService(w, r)
@@ -44,9 +49,10 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Processing insert service")
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		fmt.Printf("Error parsing request body: %s", err)
+		fmt.Printf("Error reading request body: %s", err)
 		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
@@ -56,7 +62,7 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 		ContentType: r.Header.Get("Content-Type"),
 	}
 
-	parsedRequest, err := insert.HttpMessageToRequest(httpMessage)
+	parsedRequest, err := apiinsert.HttpMessageToRequest(httpMessage)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Printf("Error parsing request body: %s", err)
@@ -70,14 +76,14 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	parsedResponse, err := insert.ResponseToHttpMessage(response)
+	parsedResponse, err := apiinsert.ResponseToHttpMessage(response)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Printf("Error parsing response: %s", err)
 		return
 	}
 
-	w.WriteHeader(parsedResponse.HttpStatus)
+	w.WriteHeader(200)
 	w.Write(parsedResponse.BodyData)
 	w.Header().Set("Content-Type", parsedResponse.ContentType)
 }
@@ -85,7 +91,7 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		fmt.Printf("Error parsing request body: %s", err)
+		fmt.Printf("Error reading request body: %s", err)
 		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
@@ -95,7 +101,7 @@ func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 		ContentType: r.Header.Get("Content-Type"),
 	}
 
-	parsedRequest, err := get.HttpMessageToRequest(httpMessage)
+	parsedRequest, err := apiget.HttpMessageToRequest(httpMessage)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Printf("Error parsing request body: %s", err)
@@ -109,24 +115,30 @@ func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	parsedResponse, err := get.ResponseToHttpMessage(response)
+	parsedResponse, err := apiget.ResponseToHttpMessage(response)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Printf("Error parsing response: %s", err)
 		return
 	}
 
-	w.WriteHeader(parsedResponse.HttpStatus)
+	w.WriteHeader(200)
 	w.Write(parsedResponse.BodyData)
 	w.Header().Set("Content-Type", parsedResponse.ContentType)
 }
 
 func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
-	body64, err := ioutil.ReadAll(bodyRequest)
+	body, err := ioutil.ReadAll(bodyRequest)
 	defer bodyRequest.Close()
 
 	if err != nil {
 		return nil, err
 	}
-	return body64, nil
+	return body, nil
 }
+
+// func dispacher(w http.ResponseWriter, httpMessage httpmessage.HttpMessage) {
+// 	w.Header().Set("Content-Type", httpMessage.ContentType)
+// 	w.WriteHeader(httpMessage.HttpStatus)
+// 	w.Write(httpMessage.BodyData)
+// }

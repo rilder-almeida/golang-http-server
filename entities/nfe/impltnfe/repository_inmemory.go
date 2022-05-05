@@ -1,29 +1,27 @@
 package impltnfe
 
 import (
-	"fmt"
-
 	"github.com/golang-http-server/entities/nfe"
 )
 
 type nfeInMemoryRepository struct {
-	store nfe.NfeDocumentList
+	store nfe.NfeDocuments
 }
 
 func NewNfeInMemoryRepository() nfe.Repository {
 	return &nfeInMemoryRepository{
-		store: make([]nfe.NfeDocument, 0),
+		store: make(nfe.NfeDocuments, 0),
 	}
 }
 
 func (repository *nfeInMemoryRepository) FindByID(id string) (nfe.NfeDocument, error) {
 	for _, nfeDocument := range repository.store {
 		if nfeDocument.NfeXmlDocument.NFe.InfNFe.Id == id {
-			return nfeDocument, nil
+			return nfeDocument, nfe.ErrAlreadyExists
 		}
 	}
 
-	return nfe.NfeDocument{}, fmt.Errorf("NFe not found")
+	return nfe.NfeDocument{}, nfe.ErrNotFound
 }
 
 func (repository *nfeInMemoryRepository) Save(nfeDocument nfe.NfeDocument) error {

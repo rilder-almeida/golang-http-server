@@ -25,7 +25,7 @@ func (adapter *Adapter) Processor(request get.Request) (get.Response, error) {
 
 func (adapter *Adapter) receiver(request get.Request) (nfe.NfeDocument, error) {
 	nfeDocument, err := adapter.repository.FindByID(request.Id)
-	if err != nil {
+	if err == nfe.ErrNotFound {
 		return nfe.NfeDocument{}, err
 	}
 	return nfeDocument, nil
@@ -33,6 +33,6 @@ func (adapter *Adapter) receiver(request get.Request) (nfe.NfeDocument, error) {
 
 func (adapter *Adapter) responder(nfeDocument nfe.NfeDocument) get.Response {
 	return get.Response{
-		NfeDocument: nfeDocument,
+		NfeXmlDocument: nfeDocument.NfeXmlDocument,
 	}
 }
