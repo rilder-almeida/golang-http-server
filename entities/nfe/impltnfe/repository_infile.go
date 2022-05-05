@@ -6,25 +6,22 @@ import (
 )
 
 type nfeInfileRepository struct {
-	store nfe.NfeDocuments
-	// FIXME retirar store
 	json_file_path string
 }
 
 func NewNfeInfileRepository(json_file_path string) nfe.Repository {
 	return &nfeInfileRepository{
-		store:          make(nfe.NfeDocuments, 0),
 		json_file_path: json_file_path,
 	}
 }
 
 func (repository *nfeInfileRepository) FindByID(id string) (nfe.NfeDocument, error) {
-	err := repository.loadInFileData()
+	store, err := repository.loadInFileData()
 	if err != nil {
 		return nfe.NfeDocument{}, err
 	}
 
-	for _, nfeDocument := range repository.store {
+	for _, nfeDocument := range store {
 		if nfeDocument.NfeXmlDocument.NFe.InfNFe.Id == id {
 			return nfeDocument, nfe.ErrAlreadyExists
 		}
@@ -34,38 +31,35 @@ func (repository *nfeInfileRepository) FindByID(id string) (nfe.NfeDocument, err
 }
 
 func (repository *nfeInfileRepository) Save(nfeDocument nfe.NfeDocument) error {
-	err := repository.loadInFileData()
+	store, err := repository.loadInFileData()
 	if err != nil {
 		return err
 	}
 
-	repository.store = append(repository.store, nfeDocument)
+	store = append(store, nfeDocument)
 
-	return repository.saveInFileData()
+	return repository.saveInFileData(store)
 }
 
-func (repository *nfeInfileRepository) loadInFileData() error {
+func (repository *nfeInfileRepository) loadInFileData() (nfe.NfeDocuments, error) {
 	data, err := shared.FromFile(repository.json_file_path)
 	if err != nil {
-		return err
+		return nfe.NfeDocuments{}, err
 	}
 
 	if string(data) == "" {
-		repository.store = nfe.NfeDocuments{}
-		return nil
+		return nfe.NfeDocuments{}, nil
 	}
 
-	repository.store, err = shared.ToNfeDocuments(data)
+	store, err := shared.ToNfeDocuments(data)
 	if err != nil {
-		return err
+		return store, err
 	}
-	return nil
-	// FIXME: return store, err
-	// não atribuir ao repository.store o valor de data
+	return store, nil
 }
 
-func (repository *nfeInfileRepository) saveInFileData() error {
-	data, err := shared.FromNfeDocuments(repository.store)
+func (repository *nfeInfileRepository) saveInFileData(store nfe.NfeDocuments) error {
+	data, err := shared.FromNfeDocuments(store)
 	if err != nil {
 		return err
 	}
