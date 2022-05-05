@@ -10,7 +10,7 @@ func FromFile(filename string) ([]byte, error) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			err = os.WriteFile(filename, []byte("{}"), fs.ModePerm)
+			err = os.WriteFile(filename, []byte(""), fs.ModePerm)
 			if err != nil {
 				return nil, err
 			}

@@ -1,8 +1,6 @@
 package impltnfe
 
 import (
-	"fmt"
-
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/shared"
 )
@@ -28,11 +26,11 @@ func (repository *nfeInfileRepository) FindByID(id string) (nfe.NfeDocument, err
 
 	for _, nfeDocument := range repository.store {
 		if nfeDocument.NfeXmlDocument.NFe.InfNFe.Id == id {
-			return nfeDocument, nil
+			return nfeDocument, nfe.ErrAlreadyExists
 		}
 	}
 
-	return nfe.NfeDocument{}, fmt.Errorf("NFe not found")
+	return nfe.NfeDocument{}, nfe.ErrNotFound
 }
 
 func (repository *nfeInfileRepository) Save(nfeDocument nfe.NfeDocument) error {
@@ -50,6 +48,11 @@ func (repository *nfeInfileRepository) loadInFileData() error {
 	data, err := shared.FromFile(repository.json_file_path)
 	if err != nil {
 		return err
+	}
+
+	if string(data) == "" {
+		repository.store = nfe.NfeDocuments{}
+		return nil
 	}
 
 	repository.store, err = shared.ToNfeDocuments(data)
