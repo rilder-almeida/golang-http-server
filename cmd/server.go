@@ -44,7 +44,7 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		n.processGetService(w, r)
 	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusNotFound)
 	}
 }
 
@@ -52,79 +52,61 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 	fmt.Println("Processing insert service")
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		fmt.Printf("Error reading request body: %s", err)
-		w.WriteHeader(http.StatusNotAcceptable)
+		responseDispatcher(w, httpmessage.Err("Error reading body", err, http.StatusNotFound))
 		return
 	}
 
-	httpMessage := httpmessage.HttpMessage{
-		BodyData:    body,
-		ContentType: r.Header.Get("Content-Type"),
-	}
+	httpMessage := httpmessage.New(body, http.StatusOK)
 
 	parsedRequest, err := apiinsert.HttpMessageToRequest(httpMessage)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Printf("Error parsing request body: %s", err)
+		responseDispatcher(w, httpmessage.Err("Error parsing request body", err, http.StatusNotFound))
 		return
 	}
 
 	response, err := n.InsertService.Insert(parsedRequest)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Printf("Error processing request: %s", err)
+		responseDispatcher(w, httpmessage.Err("Error processing request", err, http.StatusNotFound))
 		return
 	}
 
 	parsedResponse, err := apiinsert.ResponseToHttpMessage(response)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Printf("Error parsing response: %s", err)
+		responseDispatcher(w, httpmessage.Err("Error parsing response", err, http.StatusNotFound))
 		return
 	}
 
-	w.WriteHeader(200)
-	w.Write(parsedResponse.BodyData)
-	w.Header().Set("Content-Type", parsedResponse.ContentType)
+	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
 }
 
 func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		fmt.Printf("Error reading request body: %s", err)
-		w.WriteHeader(http.StatusNotAcceptable)
+		responseDispatcher(w, httpmessage.Err("Error reading body", err, http.StatusNotFound))
 		return
 	}
 
-	httpMessage := httpmessage.HttpMessage{
-		BodyData:    body,
-		ContentType: r.Header.Get("Content-Type"),
-	}
+	httpMessage := httpmessage.New(body, http.StatusOK)
 
 	parsedRequest, err := apiget.HttpMessageToRequest(httpMessage)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Printf("Error parsing request body: %s", err)
+		responseDispatcher(w, httpmessage.Err("Error parsing request body", err, http.StatusNotFound))
 		return
 	}
 
 	response, err := n.GetService.Get(parsedRequest)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Printf("Error processing request: %s", err)
+		responseDispatcher(w, httpmessage.Err("Error processing request", err, http.StatusNotFound))
 		return
 	}
 
 	parsedResponse, err := apiget.ResponseToHttpMessage(response)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Printf("Error parsing response: %s", err)
+		responseDispatcher(w, httpmessage.Err("Error parsing response", err, http.StatusNotFound))
 		return
 	}
 
-	w.WriteHeader(200)
-	w.Write(parsedResponse.BodyData)
-	w.Header().Set("Content-Type", parsedResponse.ContentType)
+	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
 }
 
 func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
@@ -137,8 +119,8 @@ func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 	return body, nil
 }
 
-// func dispacher(w http.ResponseWriter, httpMessage httpmessage.HttpMessage) {
-// 	w.Header().Set("Content-Type", httpMessage.ContentType)
-// 	w.WriteHeader(httpMessage.HttpStatus)
-// 	w.Write(httpMessage.BodyData)
-// }
+func responseDispatcher(w http.ResponseWriter, httpMessage httpmessage.HttpMessage) {
+	w.Header().Set("Content-Type", httpMessage.ContentType)
+	w.WriteHeader(httpMessage.HttpStatus)
+	w.Write(httpMessage.BodyData)
+}

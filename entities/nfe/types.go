@@ -1,9 +1,9 @@
 package nfe
 
-import "fmt"
+import "errors"
 
 type NfeDocuments []NfeDocument
 
-var ErrNotFound = fmt.Errorf("NFe not found")
+var ErrNotFound = errors.New("NFe not found")
 
-var ErrAlreadyExists = fmt.Errorf("NFe already exists")
+var ErrAlreadyExists = errors.New("NFe already exists")

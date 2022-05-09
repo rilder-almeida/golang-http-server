@@ -1,5 +1,7 @@
 package insert
 
+import "errors"
+
 type Service interface {
 	Insert(Request) (Response, error)
 }
@@ -26,5 +28,8 @@ func (s *service) Insert(request Request) (Response, error) {
 
 // assert that the http.request is valid and can be processed
 func (s *service) prepareRequest(request *Request) error {
+	if request.XML == "" {
+		return errors.New("XML is empty")
+	}
 	return nil
 }
