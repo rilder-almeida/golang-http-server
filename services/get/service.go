@@ -1,5 +1,11 @@
 package get
 
+import (
+	"errors"
+
+	customErrors "github.com/golang-http-server/entities/errors"
+)
+
 type Service interface {
 	Get(Request) (Response, error)
 }
@@ -16,15 +22,30 @@ func NewService(getGateway GetGateway) Service {
 
 func (s *service) Get(request Request) (Response, error) {
 
-	err := s.prepareRequest(&request)
+	err := s.validateRequest(&request)
 	if err != nil {
 		return Response{}, err
 	}
 
-	return s.getGateway.Processor(request)
+	response, err := s.getGateway.Processor(request)
+	if err != nil {
+		return Response{}, customErrors.Error{
+			ErrorCode:        "FAILED_GET_NFE",
+			Message:          "ID can not be processed by the GET gateway",
+			ApplicationError: err,
+		}
+	}
+	return response, nil
 }
 
 // assert that the http.request is valid and can be processed
-func (s *service) prepareRequest(request *Request) error {
+func (s *service) validateRequest(request *Request) error {
+	if request.Id == "" {
+		return customErrors.Error{
+			ErrorCode:        "ID_IS_EMPTY",
+			Message:          "Id field cannot be empty",
+			ApplicationError: errors.New("ID is empty"),
+		}
+	}
 	return nil
 }

@@ -1,7 +1,5 @@
 package httpmessage
 
-import "fmt"
-
 const (
 	DefaultContentType = "application/json"
 )
@@ -12,15 +10,11 @@ type HttpMessage struct {
 	HttpStatus  int
 }
 
-func Err(errMGs string, err error, status int) HttpMessage {
+func Err(err error, status int) HttpMessage {
 	return HttpMessage{
 		ContentType: DefaultContentType,
-		BodyData: []byte(fmt.Sprintf(`
-			{
-				"message": "%s",
-				"error": "%s"
-			}`, errMGs, err)),
-		HttpStatus: status,
+		BodyData:    []byte(err.Error()),
+		HttpStatus:  status,
 	}
 }
 

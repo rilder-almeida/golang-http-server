@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	customErrors "github.com/golang-http-server/entities/errors"
 	"github.com/golang-http-server/entities/httpmessage"
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/nfe/impltnfe"
@@ -44,7 +45,7 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		n.processGetService(w, r)
 	default:
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 
@@ -52,7 +53,7 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 	fmt.Println("Processing insert service")
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error reading body", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
@@ -60,19 +61,19 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 
 	parsedRequest, err := apiinsert.HttpMessageToRequest(httpMessage)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error parsing request body", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
 	response, err := n.InsertService.Insert(parsedRequest)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error processing request", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
 	parsedResponse, err := apiinsert.ResponseToHttpMessage(response)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error parsing response", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
@@ -82,7 +83,7 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error reading body", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
@@ -90,19 +91,19 @@ func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 
 	parsedRequest, err := apiget.HttpMessageToRequest(httpMessage)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error parsing request body", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
 	response, err := n.GetService.Get(parsedRequest)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error processing request", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
 	parsedResponse, err := apiget.ResponseToHttpMessage(response)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err("Error parsing response", err, http.StatusNotFound))
+		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
 		return
 	}
 
@@ -114,7 +115,11 @@ func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 	defer bodyRequest.Close()
 
 	if err != nil {
-		return nil, err
+		return nil, customErrors.Error{
+			ErrorCode:        "INVALID_REQUEST",
+			Message:          "Can not read the request body",
+			ApplicationError: err,
+		}
 	}
 	return body, nil
 }
