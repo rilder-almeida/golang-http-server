@@ -45,7 +45,7 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		n.processGetService(w, r)
 	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		w.WriteHeader(http.StatusMethodNotAllowed) // 405
 	}
 }
 
@@ -110,6 +110,12 @@ func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
 }
 
+func responseDispatcher(w http.ResponseWriter, httpMessage httpmessage.HttpMessage) {
+	w.Header().Set("Content-Type", httpMessage.ContentType)
+	w.WriteHeader(httpMessage.HttpStatus)
+	w.Write(httpMessage.BodyData)
+}
+
 func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 	body, err := ioutil.ReadAll(bodyRequest)
 	defer bodyRequest.Close()
@@ -120,32 +126,26 @@ func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 	return body, nil
 }
 
-func responseDispatcher(w http.ResponseWriter, httpMessage httpmessage.HttpMessage) {
-	w.Header().Set("Content-Type", httpMessage.ContentType)
-	w.WriteHeader(httpMessage.HttpStatus)
-	w.Write(httpMessage.BodyData)
-}
-
 func StatusCode(err error) int {
 	parsedError, ok := err.(customErrors.Error) // TODO: entender melhor na PROXIMA mentoria GO -> Cast de interfaces
 	if !ok {
-		return 500
+		return http.StatusInternalServerError
 	}
 
 	switch parsedError.ErrorCode {
-	case "FAILED_INSERT_XML":
-		return 500
-	case "FAILED_GET_NFE":
-		return 500
 	case "ID_IS_EMPTY":
-		return 400
+		return http.StatusBadRequest // 400
 	case "XML_IS_EMPTY":
-		return 400
+		return http.StatusBadRequest
 	case "INVALID_REQUEST":
-		return 400
+		return http.StatusBadRequest
 	case "INVALID_RESPONSE":
-		return 500
+		return http.StatusInternalServerError // 500
+	case "FAILED_INSERT_XML":
+		return http.StatusInternalServerError
+	case "FAILED_GET_NFE":
+		return http.StatusInternalServerError
 	default:
-		return 500
+		return http.StatusInternalServerError
 	}
 }
