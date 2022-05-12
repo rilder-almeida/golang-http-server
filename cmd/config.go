@@ -7,6 +7,6 @@ import (
 )
 
 var Config = impltnfe.Config{
-	Repository:   os.Getenv("REPOSITORY"),
-	JsonFilePath: "./data/nfe.json",
+	RepositoryType:     os.Getenv("REPOSITORY_TYPE"),
+	RepositoryFilePath: "./data/nfe.json",
 }

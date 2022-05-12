@@ -3,7 +3,7 @@ package apiget
 import (
 	"encoding/json"
 
-	customErrors "github.com/golang-http-server/entities/errors"
+	customerrors "github.com/golang-http-server/entities/errors"
 	"github.com/golang-http-server/entities/httpmessage"
 	"github.com/golang-http-server/services/get"
 )
@@ -12,7 +12,7 @@ func HttpMessageToRequest(httpMessage httpmessage.HttpMessage) (get.Request, err
 	var request get.Request
 	err := json.Unmarshal(httpMessage.BodyData, &request)
 	if err != nil {
-		return get.Request{}, customErrors.New("INVALID_REQUEST", "Can not unmarshal the request body", err)
+		return get.Request{}, customerrors.New("INVALID_REQUEST", "Can not unmarshal the request body", err)
 	}
 	return request, nil
 }
@@ -20,7 +20,7 @@ func HttpMessageToRequest(httpMessage httpmessage.HttpMessage) (get.Request, err
 func ResponseToHttpMessage(response get.Response) (httpmessage.HttpMessage, error) {
 	bodyData, err := json.Marshal(response)
 	if err != nil {
-		return httpmessage.HttpMessage{}, customErrors.New("INVALID_RESPONSE", "Can not marshal the response body", err)
+		return httpmessage.HttpMessage{}, customerrors.New("INVALID_RESPONSE", "Can not marshal the response body", err)
 	}
 	return httpmessage.HttpMessage{
 		BodyData: bodyData,

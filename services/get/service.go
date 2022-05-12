@@ -3,7 +3,7 @@ package get
 import (
 	"errors"
 
-	customErrors "github.com/golang-http-server/entities/errors"
+	customerrors "github.com/golang-http-server/entities/errors"
 )
 
 type Service interface {
@@ -29,7 +29,7 @@ func (s *service) Get(request Request) (Response, error) {
 
 	response, err := s.getGateway.Processor(request)
 	if err != nil {
-		return Response{}, customErrors.New("FAILED_GET_NFE", "ID can not be processed by the GET gateway", err)
+		return Response{}, customerrors.New("FAILED_GET_NFE", "ID can not be processed by the GET gateway", err)
 	}
 	return response, nil
 }
@@ -37,7 +37,7 @@ func (s *service) Get(request Request) (Response, error) {
 // assert that the http.request is valid and can be processed
 func (s *service) validateRequest(request *Request) error {
 	if request.Id == "" {
-		return customErrors.New("ID_IS_EMPTY", "Id field cannot be empty", errors.New("ID is empty"))
+		return customerrors.New("ID_IS_EMPTY", "Id field cannot be empty", errors.New("ID is empty"))
 	}
 	return nil
 }

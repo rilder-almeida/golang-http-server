@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	customErrors "github.com/golang-http-server/entities/errors"
+	customerrors "github.com/golang-http-server/entities/errors"
 	"github.com/golang-http-server/entities/httpmessage"
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/nfe/impltnfe"
@@ -121,13 +121,13 @@ func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 	defer bodyRequest.Close()
 
 	if err != nil {
-		return nil, customErrors.New("INVALID_REQUEST", "Can not read the request body", err)
+		return nil, customerrors.New("INVALID_REQUEST", "Can not read the request body", err)
 	}
 	return body, nil
 }
 
 func StatusCode(err error) int {
-	parsedError, ok := err.(customErrors.Error) // TODO: entender melhor na PROXIMA mentoria GO -> Cast de interfaces
+	parsedError, ok := err.(customerrors.Error) // TODO: entender melhor na PROXIMA mentoria GO -> Cast de interfaces
 	if !ok {
 		return http.StatusInternalServerError
 	}

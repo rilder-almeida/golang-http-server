@@ -7,14 +7,14 @@ import (
 )
 
 type Config struct {
-	Repository   string
-	JsonFilePath string
+	RepositoryType     string
+	RepositoryFilePath string
 }
 
 func NewNfeRepository(c Config) nfe.Repository {
-	switch c.Repository {
+	switch c.RepositoryType {
 	case "INFILE":
-		return NewNfeInfileRepository(c.JsonFilePath)
+		return NewNfeInfileRepository(c.RepositoryFilePath)
 	case "INMEMORY":
 		return NewNfeInMemoryRepository()
 	default:
