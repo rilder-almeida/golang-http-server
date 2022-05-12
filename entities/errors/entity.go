@@ -1,7 +1,6 @@
 package errors
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -20,22 +19,10 @@ func (e Error) Error() string {
 		}`, e.ErrorCode, e.Message, e.ApplicationError)
 }
 
-func StatusCode(err error) int {
-	var parsedError Error
-	json.Unmarshal([]byte(err.Error()), &parsedError)
-
-	switch parsedError.ErrorCode {
-	case "FAILED_INSERT_XML":
-		return 500
-	case "FAILED_GET_NFE":
-		return 500
-	case "ID_IS_EMPTY":
-		return 400
-	case "XML_IS_EMPTY":
-		return 400
-	case "INVALID_REQUEST":
-		return 400
-	default:
-		return 500
+func New(errorCode string, message string, applicationError error) Error {
+	return Error{
+		ErrorCode:        errorCode,
+		Message:          message,
+		ApplicationError: applicationError,
 	}
 }

@@ -53,7 +53,7 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 	fmt.Println("Processing insert service")
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
@@ -61,19 +61,19 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 
 	parsedRequest, err := apiinsert.HttpMessageToRequest(httpMessage)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
 	response, err := n.InsertService.Insert(parsedRequest)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
 	parsedResponse, err := apiinsert.ResponseToHttpMessage(response)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
@@ -83,7 +83,7 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
@@ -91,19 +91,19 @@ func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
 
 	parsedRequest, err := apiget.HttpMessageToRequest(httpMessage)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
 	response, err := n.GetService.Get(parsedRequest)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
 	parsedResponse, err := apiget.ResponseToHttpMessage(response)
 	if err != nil {
-		responseDispatcher(w, httpmessage.Err(err, customErrors.StatusCode(err)))
+		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
 		return
 	}
 
@@ -115,11 +115,7 @@ func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 	defer bodyRequest.Close()
 
 	if err != nil {
-		return nil, customErrors.Error{
-			ErrorCode:        "INVALID_REQUEST",
-			Message:          "Can not read the request body",
-			ApplicationError: err,
-		}
+		return nil, customErrors.New("INVALID_REQUEST", "Can not read the request body", err)
 	}
 	return body, nil
 }
@@ -128,4 +124,28 @@ func responseDispatcher(w http.ResponseWriter, httpMessage httpmessage.HttpMessa
 	w.Header().Set("Content-Type", httpMessage.ContentType)
 	w.WriteHeader(httpMessage.HttpStatus)
 	w.Write(httpMessage.BodyData)
+}
+
+func StatusCode(err error) int {
+	parsedError, ok := err.(customErrors.Error) // TODO: entender melhor na PROXIMA mentoria GO -> Cast de interfaces
+	if !ok {
+		return 500
+	}
+
+	switch parsedError.ErrorCode {
+	case "FAILED_INSERT_XML":
+		return 500
+	case "FAILED_GET_NFE":
+		return 500
+	case "ID_IS_EMPTY":
+		return 400
+	case "XML_IS_EMPTY":
+		return 400
+	case "INVALID_REQUEST":
+		return 400
+	case "INVALID_RESPONSE":
+		return 500
+	default:
+		return 500
+	}
 }

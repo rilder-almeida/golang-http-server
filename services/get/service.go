@@ -29,11 +29,7 @@ func (s *service) Get(request Request) (Response, error) {
 
 	response, err := s.getGateway.Processor(request)
 	if err != nil {
-		return Response{}, customErrors.Error{
-			ErrorCode:        "FAILED_GET_NFE",
-			Message:          "ID can not be processed by the GET gateway",
-			ApplicationError: err,
-		}
+		return Response{}, customErrors.New("FAILED_GET_NFE", "ID can not be processed by the GET gateway", err)
 	}
 	return response, nil
 }
@@ -41,11 +37,7 @@ func (s *service) Get(request Request) (Response, error) {
 // assert that the http.request is valid and can be processed
 func (s *service) validateRequest(request *Request) error {
 	if request.Id == "" {
-		return customErrors.Error{
-			ErrorCode:        "ID_IS_EMPTY",
-			Message:          "Id field cannot be empty",
-			ApplicationError: errors.New("ID is empty"),
-		}
+		return customErrors.New("ID_IS_EMPTY", "Id field cannot be empty", errors.New("ID is empty"))
 	}
 	return nil
 }

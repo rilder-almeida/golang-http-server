@@ -10,14 +10,6 @@ type HttpMessage struct {
 	HttpStatus  int
 }
 
-func Err(err error, status int) HttpMessage {
-	return HttpMessage{
-		ContentType: DefaultContentType,
-		BodyData:    []byte(err.Error()),
-		HttpStatus:  status,
-	}
-}
-
 func New(bodyData []byte, httpStatus int) HttpMessage {
 	return HttpMessage{
 		ContentType: DefaultContentType,

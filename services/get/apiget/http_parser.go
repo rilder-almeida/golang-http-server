@@ -12,11 +12,7 @@ func HttpMessageToRequest(httpMessage httpmessage.HttpMessage) (get.Request, err
 	var request get.Request
 	err := json.Unmarshal(httpMessage.BodyData, &request)
 	if err != nil {
-		return get.Request{}, customErrors.Error{
-			ErrorCode:        "INVALID_REQUEST",
-			Message:          "Can not unmarshal the request body",
-			ApplicationError: err,
-		}
+		return get.Request{}, customErrors.New("INVALID_REQUEST", "Can not unmarshal the request body", err)
 	}
 	return request, nil
 }
@@ -24,11 +20,7 @@ func HttpMessageToRequest(httpMessage httpmessage.HttpMessage) (get.Request, err
 func ResponseToHttpMessage(response get.Response) (httpmessage.HttpMessage, error) {
 	bodyData, err := json.Marshal(response)
 	if err != nil {
-		return httpmessage.HttpMessage{}, customErrors.Error{
-			ErrorCode:        "INVALID_REQUEST",
-			Message:          "Can not parse the request body from base64 to base32",
-			ApplicationError: err,
-		}
+		return httpmessage.HttpMessage{}, customErrors.New("INVALID_RESPONSE", "Can not marshal the response body", err)
 	}
 	return httpmessage.HttpMessage{
 		BodyData: bodyData,

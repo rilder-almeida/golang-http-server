@@ -29,11 +29,7 @@ func (s *service) Insert(request Request) (Response, error) {
 
 	response, err := s.insertGateway.Processor(request)
 	if err != nil {
-		return Response{}, customErrors.Error{
-			ErrorCode:        "FAILED_INSERT_XML",
-			Message:          "Xml can not be processed by the INSERT gateway",
-			ApplicationError: err,
-		}
+		return Response{}, customErrors.New("FAILED_INSERT_XML", "Xml can not be processed by the INSERT gateway", err)
 	}
 	return response, nil
 }
@@ -41,11 +37,7 @@ func (s *service) Insert(request Request) (Response, error) {
 // assert that the http.request is valid and can be processed
 func (s *service) validateRequest(request *Request) error {
 	if request.XML == "" {
-		return customErrors.Error{
-			ErrorCode:        "XML_IS_EMPTY",
-			Message:          "Xml field cannot be empty",
-			ApplicationError: errors.New("XML is empty"),
-		}
+		return customErrors.New("XML_IS_EMPTY", "Xml field cannot be empty", errors.New("XML is empty"))
 	}
 	return nil
 }
