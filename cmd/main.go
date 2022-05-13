@@ -9,7 +9,12 @@ import (
 	"time"
 )
 
-// https://millhouse.dev/posts/graceful-shutdowns-in-golang-with-signal-notify-context
+// func main() {
+// 	server := NewServer()
+// 	log.Fatal(http.ListenAndServe(":8000", server))
+// }
+
+// // https://millhouse.dev/posts/graceful-shutdowns-in-golang-with-signal-notify-context
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
