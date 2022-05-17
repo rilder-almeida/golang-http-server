@@ -19,7 +19,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	server := NewServer()
+	server := WrapServerWithLogging(NewServer())
 
 	var srv http.Server
 	srv.Addr = ":8000"

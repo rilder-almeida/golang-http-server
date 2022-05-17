@@ -14,6 +14,6 @@ type Logger struct {
 type ConfigLogger struct {
 	Fields       map[string]interface{}
 	From         string
-	DefaultLevel string
+	MinimumLevel string
 	Output       io.Writer
 }

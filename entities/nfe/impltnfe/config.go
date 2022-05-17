@@ -1,7 +1,7 @@
 package impltnfe
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/golang-http-server/entities/nfe"
 )
@@ -18,6 +18,6 @@ func NewNfeRepository(c Config) nfe.Repository {
 	case "INMEMORY":
 		return NewNfeInMemoryRepository()
 	default:
-		panic(fmt.Sprintf("Bad repository: %s", c))
+		panic(errors.New("bad repository, check env variables"))
 	}
 }

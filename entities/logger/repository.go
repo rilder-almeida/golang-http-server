@@ -6,16 +6,10 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type ZLogger interface {
-	Msg(string, string)
-	Err(error, string)
-	Fatal(error, string)
-}
-
 func NewLogger(config ConfigLogger) *zerolog.Logger {
-	output := zerolog.ConsoleWriter{Out: config.Output, TimeFormat: time.RFC3339}
+	output := zerolog.ConsoleWriter{Out: config.Output, TimeFormat: time.RFC3339, NoColor: true}
 
-	levelLog, err := zerolog.ParseLevel(config.DefaultLevel)
+	levelLog, err := zerolog.ParseLevel(config.MinimumLevel)
 	if err != nil {
 		levelLog = zerolog.InfoLevel
 	}

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -24,21 +23,18 @@ type NfeServer struct {
 }
 
 func NewRepository(config impltnfe.Config) nfe.Repository {
-	fmt.Println("Creating repository")
 	return impltnfe.NewNfeRepository(config)
 }
 
 func NewServer() *NfeServer {
 	repository := NewRepository(Config)
-	fmt.Println("Creating server")
 	return &NfeServer{
-		GetService:    get.NewService(implget.NewAdapter(repository)),
-		InsertService: insert.NewService(implinsert.NewAdapter(repository)),
+		GetService:    get.NewService(implget.WrapGetServiceWithLogging(implget.NewAdapter(repository))),
+		InsertService: insert.NewService(implinsert.WrapInsertServiceWithLogging(implinsert.NewAdapter(repository))),
 	}
 }
 
 func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Request received")
 	switch r.Method {
 	case http.MethodPost:
 		n.processInsertService(w, r)
@@ -50,7 +46,6 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Processing insert service")
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
