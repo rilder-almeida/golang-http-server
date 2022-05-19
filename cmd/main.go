@@ -30,7 +30,7 @@ func main() {
 	<-ctx.Done()
 
 	stop()
-	log.Printf("HTTP server is Shutingdown")
+	log.Printf("HTTP server is Shuttingdown")
 
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

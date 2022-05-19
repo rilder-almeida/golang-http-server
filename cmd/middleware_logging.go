@@ -27,6 +27,6 @@ func WrapServerWithLogging(next http.Handler) http.Handler {
 }
 
 func (m *loggingMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	defer m.logger.Trace().Msg("Request received")
+	m.logger.Trace().Msg("Request received")
 	m.next.ServeHTTP(w, r)
 }
