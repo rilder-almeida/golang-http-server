@@ -7,23 +7,32 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/golang-http-server/entities/metrics"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// func main() {
-// 	server := NewServer()
-// 	log.Fatal(http.ListenAndServe(":8000", server))
-// }
-
-// // https://millhouse.dev/posts/graceful-shutdowns-in-golang-with-signal-notify-context
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	server := WrapServerWithLogging(NewServer())
+	metrics, err := metrics.NewPrometheus()
+	if err != nil {
+		log.Fatalf("Failed to create metrics: %v", err)
+	}
 
-	var srv http.Server
-	srv.Addr = ":8000"
-	srv.Handler = server
+	handler := WrapHandlerWithLogging(NewHandler())
+	handler = WrapHandlerWithMetrics(handler, metrics)
+
+	mux := http.NewServeMux()
+	mux.Handle("/nfe/v1", handler)
+	mux.Handle("/metrics", promhttp.Handler())
+
+	srv := &http.Server{
+		Addr:    ":8000",
+		Handler: mux,
+	}
 
 	go srv.ListenAndServe()
 
@@ -36,36 +45,6 @@ func main() {
 	defer cancel()
 
 	if err := srv.Shutdown(timeoutCtx); err != nil {
-		log.Fatalf("HTTP server ListenAndServe: %v", err)
+		log.Fatalf("Failed to shutdown HTTP server: %v", err)
 	}
 }
-
-// // https://pkg.go.dev/net/http#Server.Shutdown
-// func main() {
-
-// 	var srv http.Server
-
-// 	server := NewServer()
-
-// 	idleConnsClosed := make(chan struct{})
-
-// 	go func() {
-// 		sigint := make(chan os.Signal, 1)
-// 		signal.Notify(sigint, os.Interrupt)
-
-// 		<-sigint
-
-// 		if err := srv.Shutdown(context.Background()); err != nil {
-// 			log.Printf("HTTP server Shutdown: %v", err)
-// 		}
-
-// 		close(idleConnsClosed)
-// 	}()
-
-// 	srv.Addr = ":8000"
-// 	srv.Handler = server
-
-// 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-// 		log.Fatalf("HTTP server ListenAndServe: %v", err)
-// 	}
-// }

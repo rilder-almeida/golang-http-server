@@ -17,7 +17,7 @@ import (
 	"github.com/golang-http-server/services/insert/implinsert"
 )
 
-type NfeServer struct {
+type NfeHandler struct {
 	GetService    get.Service
 	InsertService insert.Service
 }
@@ -26,15 +26,15 @@ func NewRepository(config impltnfe.Config) nfe.Repository {
 	return impltnfe.NewNfeRepository(config)
 }
 
-func NewServer() *NfeServer {
+func NewHandler() *NfeHandler {
 	repository := NewRepository(Config)
-	return &NfeServer{
+	return &NfeHandler{
 		GetService:    get.NewService(implget.WrapGetServiceWithLogging(implget.NewAdapter(repository))),
 		InsertService: insert.NewService(implinsert.WrapInsertServiceWithLogging(implinsert.NewAdapter(repository))),
 	}
 }
 
-func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (n *NfeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		n.processInsertService(w, r)
@@ -45,7 +45,7 @@ func (n *NfeServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request) {
+func (n *NfeHandler) processInsertService(w http.ResponseWriter, r *http.Request) {
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
@@ -75,7 +75,7 @@ func (n *NfeServer) processInsertService(w http.ResponseWriter, r *http.Request)
 	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
 }
 
-func (n *NfeServer) processGetService(w http.ResponseWriter, r *http.Request) {
+func (n *NfeHandler) processGetService(w http.ResponseWriter, r *http.Request) {
 	body, err := requestBodyReader(r.Body)
 	if err != nil {
 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))

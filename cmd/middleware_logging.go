@@ -19,7 +19,7 @@ var config = logger.ConfigLogger{
 	Output:       os.Stdout,
 }
 
-func WrapServerWithLogging(next http.Handler) http.Handler {
+func WrapHandlerWithLogging(next http.Handler) http.Handler {
 	return &loggingMiddleware{
 		next:   next,
 		logger: logger.NewLogger(config),
