@@ -122,7 +122,7 @@ func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
 }
 
 func StatusCode(err error) int {
-	parsedError, ok := err.(customerrors.Error) // TODO: entender melhor na PROXIMA mentoria GO -> Cast de interfaces
+	parsedError, ok := err.(customerrors.Error)
 	if !ok {
 		return http.StatusInternalServerError
 	}
