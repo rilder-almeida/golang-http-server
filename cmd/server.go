@@ -29,8 +29,8 @@ func NewRepository(config impltnfe.Config) nfe.Repository {
 func NewHandler() *NfeHandler {
 	repository := NewRepository(Config)
 	return &NfeHandler{
-		GetService:    get.NewService(implget.WrapGetServiceWithLogging(implget.NewAdapter(repository))),
-		InsertService: insert.NewService(implinsert.WrapInsertServiceWithLogging(implinsert.NewAdapter(repository))),
+		GetService:    get.WrapServiceWithMetrics(get.NewService(implget.WrapGetServiceWithLogging(implget.NewAdapter(repository)))),
+		InsertService: insert.WrapServiceWithMetrics(insert.NewService(implinsert.WrapInsertServiceWithLogging(implinsert.NewAdapter(repository)))),
 	}
 }
 

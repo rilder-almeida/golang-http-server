@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/golang-http-server/entities/metrics"
@@ -12,10 +13,35 @@ type metricsMiddleware struct {
 	metrics *metrics.PrometheusMetrics
 }
 
-func WrapHandlerWithMetrics(next http.Handler, metrics *metrics.PrometheusMetrics) http.Handler {
+func WrapHandlerWithMetrics(next http.Handler) http.Handler {
+	prometheusMetrics := &metrics.PrometheusMetrics{
+		TotalRequestsCounter: prometheus.NewCounterVec(
+			prometheus.CounterOpts{
+				Name: "total_requests_counter",
+				Help: "Total requests counter",
+			},
+			[]string{"method", "path"},
+		),
+		RequestLatencyHistogram: prometheus.NewHistogramVec(
+			prometheus.HistogramOpts{
+				Name: "request_latency_histogram",
+				Help: "Request latency histogram",
+			},
+			[]string{"method", "path"},
+		)}
+	err := prometheus.Register(prometheusMetrics.TotalRequestsCounter)
+	if err != nil {
+		log.Fatalf("Failed to register metrics: %v", err)
+	}
+
+	err = prometheus.Register(prometheusMetrics.RequestLatencyHistogram)
+	if err != nil {
+		log.Fatalf("Failed to register metrics: %v", err)
+	}
+
 	return &metricsMiddleware{
 		next:    next,
-		metrics: metrics,
+		metrics: prometheusMetrics,
 	}
 }
 
@@ -27,11 +53,5 @@ func (m *metricsMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	m.next.ServeHTTP(w, r)
 
-	// TODO: if for ResponseSuccessedCounter or ResponseFailedCounter based on body
-
-	m.metrics.ResponseSuccessedCounter.WithLabelValues(r.Method, r.URL.Path).Inc()
-	m.metrics.ResponseFailedCounter.WithLabelValues(r.Method, r.URL.Path, "", "").Inc() //TODO: get status code and error from w context
-
 	timer.ObserveDuration()
-
 }

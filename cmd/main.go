@@ -8,8 +8,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/golang-http-server/entities/metrics"
-
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -17,13 +15,8 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	metrics, err := metrics.NewPrometheus()
-	if err != nil {
-		log.Fatalf("Failed to create metrics: %v", err)
-	}
-
 	handler := WrapHandlerWithLogging(NewHandler())
-	handler = WrapHandlerWithMetrics(handler, metrics)
+	handler = WrapHandlerWithMetrics(handler)
 
 	mux := http.NewServeMux()
 	mux.Handle("/nfe/v1", handler)
