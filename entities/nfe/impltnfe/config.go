@@ -17,6 +17,8 @@ func NewNfeRepository(c Config) nfe.Repository {
 		return NewNfeInfileRepository(c.RepositoryFilePath)
 	case "INMEMORY":
 		return NewNfeInMemoryRepository()
+	case "POSTGRESQL":
+		return NewNfePostgresqlRepository()
 	default:
 		panic(errors.New("bad repository, check env variables"))
 	}

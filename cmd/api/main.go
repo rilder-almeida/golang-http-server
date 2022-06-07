@@ -29,14 +29,6 @@ func main() {
 
 	httpServer := getHTTPServer()
 
-	app.RegisterShutdownHandler(
-		&app.ShutdownHandler{
-			Name:     "http_server",
-			Priority: shutdownPriorityHTTP,
-			Handler:  httpServer.Shutdown,
-			Policy:   app.ErrorPolicyAbort,
-		})
-
 	app.RunAndWait(
 		func() error {
 			return httpServer.ListenAndServe()

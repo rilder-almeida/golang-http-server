@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"github.com/arquivei/foundationkit/app"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -19,6 +20,14 @@ func getHTTPServer() *http.Server {
 		Addr:    httpAddr,
 		Handler: r,
 	}
+
+	app.RegisterShutdownHandler(
+		&app.ShutdownHandler{
+			Name:     "http_server",
+			Priority: shutdownPriorityHTTP,
+			Handler:  httpServer.Shutdown,
+			Policy:   app.ErrorPolicyAbort,
+		})
 
 	return httpServer
 }
