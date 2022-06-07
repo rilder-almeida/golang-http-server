@@ -4,12 +4,15 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func getHTTPServer() *http.Server {
 	r := mux.NewRouter()
 
-	r.PathPrefix("/").Handler(nil)
+	handler := NewHandler()
+	r.PathPrefix("/nfe/v1").Handler(handler)
+	r.PathPrefix("/metrics").Handler(promhttp.Handler())
 
 	httpAddr := ":" + config.HTTP.Port
 	httpServer := &http.Server{

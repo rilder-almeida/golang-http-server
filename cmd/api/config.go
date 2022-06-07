@@ -1,9 +1,11 @@
 package main
 
 import (
+	"os"
 	"time"
 
 	fklog "github.com/arquivei/foundationkit/log"
+	"github.com/golang-http-server/entities/nfe/impltnfe"
 )
 
 var config struct {
@@ -17,4 +19,9 @@ var config struct {
 		Graceperiod time.Duration `default:"3s"`
 		Timeout     time.Duration `default:"5s"`
 	}
+}
+
+var repositoryConfig = impltnfe.Config{
+	RepositoryType:     os.Getenv("REPOSITORY_TYPE"),
+	RepositoryFilePath: "./data/nfe.json",
 }
