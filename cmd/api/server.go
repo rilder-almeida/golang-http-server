@@ -29,6 +29,8 @@ func NewRepository(config impltnfe.Config) nfe.Repository {
 func NewHandler() *NfeHandler {
 	repository := NewRepository(repositoryConfig)
 	return &NfeHandler{
+		// TODO LIMPAR O WRAPPER DE LOG E O ZEROLOG
+		// TODO VERIFICAR A NECESSIDADE DE USAR O WRAPPER DE METRICS
 		GetService:    get.WrapServiceWithMetrics(get.NewService(implget.WrapGetServiceWithLogging(implget.NewAdapter(repository)))),
 		InsertService: insert.WrapServiceWithMetrics(insert.NewService(implinsert.WrapInsertServiceWithLogging(implinsert.NewAdapter(repository)))),
 	}

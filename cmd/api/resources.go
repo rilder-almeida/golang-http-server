@@ -29,5 +29,7 @@ func getHTTPServer() *http.Server {
 			Policy:   app.ErrorPolicyAbort,
 		})
 
+	// TODO RETORNAR O SERVER COM O WRAPPER DE METRICS
+
 	return httpServer
 }

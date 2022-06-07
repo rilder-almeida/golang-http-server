@@ -81,6 +81,15 @@ func savePostgresqlData(db *gorm.DB, nfeDocument nfe.NfeDocument) error {
 	return nil
 }
 
+// TODO SUBIR WINTERFELL POSTGESQL
+// TODO CRIAR O BANCO DE DADOS E A TABELA
+// TODO TESTAR A CONEXAO
+// TODO TESTAR A INSERCAO DE UM NOVO REGISTRO
+// TODO TESTAR A INSERCAO DE UM REGISTRO QUE JA EXISTE
+// TODO TESTAR A BUSCA POR ID
+// TODO TESTAR A BUSCA POR ID QUE NAO EXISTE
+// TODO TESTAR A BUSCA POR ID QUE JA EXISTE
+
 /*
 https://stackoverflow.com/questions/69795462/does-gorm-automatically-close-the-connection
 

@@ -21,6 +21,8 @@ var config struct {
 	}
 }
 
+// TODO PASSAR O repositoryConfig PARA A config E SETAR AS VARIÁVEIS NO DOCKER COMPOSE
+
 var repositoryConfig = impltnfe.Config{
 	RepositoryType:     os.Getenv("REPOSITORY_TYPE"),
 	RepositoryFilePath: "./data/nfe.json",
