@@ -2,3 +2,4 @@ golang-http-server
 docker-compose.yaml
 /test_data/*
 **/vendor/
+**/test_data/
