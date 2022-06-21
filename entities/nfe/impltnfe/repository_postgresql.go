@@ -2,38 +2,23 @@ package impltnfe
 
 import (
 	"github.com/golang-http-server/entities/nfe"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type postgresqlConfig struct {
-	Host     string `json:"host"`
-	Port     string `json:"port"`
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Dbname   string `json:"dbname"`
-	Sslmode  string `json:"sslmode"`
+type nfePostgresqlRepository struct {
+	db *gorm.DB
 }
 
-var postgresqlConfigDefault = postgresqlConfig{
-	Host:     "localhost",
-	Port:     "5432",
-	User:     "postgres",
-	Password: "postgres",
-	Dbname:   "postgres",
-	Sslmode:  "disable",
-}
+// TODO Criar models
 
-type nfePostgresqlRepository struct{}
-
-func NewNfePostgresqlRepository() nfe.Repository {
-	return &nfePostgresqlRepository{}
+func NewNfePostgresqlRepository(database *gorm.DB) nfe.Repository {
+	return &nfePostgresqlRepository{
+		db: database,
+	}
 }
 
 func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NfeDocument, error) {
-	db := getConnection(postgresqlConfigDefault)
-
-	nfeDocuments, err := loadPostgresqlData(db)
+	nfeDocuments, err := loadPostgresqlData(repository.db)
 	if err != nil {
 		return nfe.NfeDocument{}, err
 	}
@@ -49,17 +34,7 @@ func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NfeDocument,
 }
 
 func (repository *nfePostgresqlRepository) Save(nfeDocument nfe.NfeDocument) error {
-	db := getConnection(postgresqlConfigDefault)
-	return savePostgresqlData(db, nfeDocument)
-}
-
-func getConnection(config postgresqlConfig) *gorm.DB {
-	dsn := "host=" + config.Host + " port=" + config.Port + " user=" + config.User + " password=" + config.Password + " dbname=" + config.Dbname + " sslmode=" + config.Sslmode
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-	return db
+	return savePostgresqlData(repository.db, nfeDocument)
 }
 
 func loadPostgresqlData(db *gorm.DB) (nfe.NfeDocuments, error) {
@@ -81,7 +56,7 @@ func savePostgresqlData(db *gorm.DB, nfeDocument nfe.NfeDocument) error {
 	return nil
 }
 
-// TODO SUBIR WINTERFELL POSTGESQL
+// TODO SUBIR POSTGRESQL
 // TODO CRIAR O BANCO DE DADOS E A TABELA
 // TODO TESTAR A CONEXAO
 // TODO TESTAR A INSERCAO DE UM NOVO REGISTRO
@@ -89,13 +64,3 @@ func savePostgresqlData(db *gorm.DB, nfeDocument nfe.NfeDocument) error {
 // TODO TESTAR A BUSCA POR ID
 // TODO TESTAR A BUSCA POR ID QUE NAO EXISTE
 // TODO TESTAR A BUSCA POR ID QUE JA EXISTE
-
-/*
-https://stackoverflow.com/questions/69795462/does-gorm-automatically-close-the-connection
-
-A gorm.DB object is intended to be reused, like a sql.DB handle.
-You rarely have to explicitly close these objects. Just create it once and reuse it.
-
-gorm.DB contains a sql.DB which uses a connection pool to manage the connections.
-If it is closed, it will stop accepting new queries, wait for running queries to finish and close all connections.
-*/

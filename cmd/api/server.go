@@ -8,7 +8,6 @@ import (
 	customerrors "github.com/golang-http-server/entities/errors"
 	"github.com/golang-http-server/entities/httpmessage"
 	"github.com/golang-http-server/entities/nfe"
-	"github.com/golang-http-server/entities/nfe/impltnfe"
 	"github.com/golang-http-server/services/get"
 	"github.com/golang-http-server/services/get/apiget"
 	"github.com/golang-http-server/services/get/implget"
@@ -22,17 +21,15 @@ type NfeHandler struct {
 	InsertService insert.Service
 }
 
-func NewRepository(config impltnfe.Config) nfe.Repository {
-	return impltnfe.NewNfeRepository(config)
+func NewRepository() nfe.Repository {
+	return NewNfeRepository()
 }
 
 func NewHandler() *NfeHandler {
-	repository := NewRepository(repositoryConfig)
+	repository := NewRepository()
 	return &NfeHandler{
-		// TODO LIMPAR O WRAPPER DE LOG E O ZEROLOG
-		// TODO VERIFICAR A NECESSIDADE DE USAR O WRAPPER DE METRICS
-		GetService:    get.WrapServiceWithMetrics(get.NewService(implget.WrapGetServiceWithLogging(implget.NewAdapter(repository)))),
-		InsertService: insert.WrapServiceWithMetrics(insert.NewService(implinsert.WrapInsertServiceWithLogging(implinsert.NewAdapter(repository)))),
+		GetService:    get.WrapServiceWithMetrics(get.NewService(implget.NewAdapter(repository))),
+		InsertService: insert.WrapServiceWithMetrics(insert.NewService(implinsert.NewAdapter(repository))),
 	}
 }
 
