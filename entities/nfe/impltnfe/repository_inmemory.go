@@ -5,26 +5,26 @@ import (
 )
 
 type nfeInMemoryRepository struct {
-	store nfe.NfeDocuments
+	store nfe.NFeDocuments
 }
 
-func NewNfeInMemoryRepository() nfe.Repository {
+func NewNFeInMemoryRepository() nfe.Repository {
 	return &nfeInMemoryRepository{
-		store: make(nfe.NfeDocuments, 0),
+		store: make(nfe.NFeDocuments, 0),
 	}
 }
 
-func (repository *nfeInMemoryRepository) FindByID(id string) (nfe.NfeDocument, error) {
+func (repository *nfeInMemoryRepository) FindByID(id string) (nfe.NFeDocument, error) {
 	for _, nfeDocument := range repository.store {
-		if nfeDocument.NfeXmlDocument.NFe.InfNFe.Id == id {
+		if nfeDocument.NFeXmlDocument.NFe.InfNFe.Id == id {
 			return nfeDocument, nfe.ErrAlreadyExists
 		}
 	}
 
-	return nfe.NfeDocument{}, nfe.ErrNotFound
+	return nfe.NFeDocument{}, nfe.ErrNotFound
 }
 
-func (repository *nfeInMemoryRepository) Save(nfeDocument nfe.NfeDocument) error {
+func (repository *nfeInMemoryRepository) Save(nfeDocument nfe.NFeDocument) error {
 	repository.store = append(repository.store, nfeDocument)
 	return nil
 }

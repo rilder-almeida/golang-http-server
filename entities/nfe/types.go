@@ -2,7 +2,7 @@ package nfe
 
 import "errors"
 
-type NfeDocuments []NfeDocument
+type NFeDocuments []NFeDocument
 
 var ErrNotFound = errors.New("NFe not found")
 

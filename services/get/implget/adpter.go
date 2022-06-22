@@ -23,16 +23,16 @@ func (adapter *Adapter) Processor(request get.Request) (get.Response, error) {
 	return adapter.responder(nfeDocument), nil
 }
 
-func (adapter *Adapter) receiver(request get.Request) (nfe.NfeDocument, error) {
+func (adapter *Adapter) receiver(request get.Request) (nfe.NFeDocument, error) {
 	nfeDocument, err := adapter.repository.FindByID(request.Id)
 	if err == nfe.ErrNotFound {
-		return nfe.NfeDocument{}, err
+		return nfe.NFeDocument{}, err
 	}
 	return nfeDocument, nil
 }
 
-func (adapter *Adapter) responder(nfeDocument nfe.NfeDocument) get.Response {
+func (adapter *Adapter) responder(nfeDocument nfe.NFeDocument) get.Response {
 	return get.Response{
-		NfeXmlDocument: nfeDocument.NfeXmlDocument,
+		NFeXmlDocument: nfeDocument.NFeXmlDocument,
 	}
 }

@@ -24,11 +24,11 @@ var config struct {
 	}
 
 	Postgresql struct {
-		Host     string `default:"localhost",`
-		User     string `default:"stark",`
-		Password string `default:"stark",`
-		Dbname   string `default:"winterfell",`
-		Sslmode  string `default:"disable",`
-		Port     string `default:"5432",`
+		Host     string `default:"localhost"`
+		User     string `default:"stark"`
+		Password string `default:"stark"`
+		Dbname   string `default:"winterfell"`
+		Sslmode  string `default:"disable"`
+		Port     string `default:"5432"`
 	}
 }

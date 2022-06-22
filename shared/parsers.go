@@ -9,16 +9,16 @@ import (
 	"github.com/golang-http-server/entities/xml"
 )
 
-func ToNfeDocument(data []byte) (nfe.NfeDocument, error) {
-	var nfeDocument nfe.NfeDocument
+func ToNFeDocument(data []byte) (nfe.NFeDocument, error) {
+	var nfeDocument nfe.NFeDocument
 	err := json.Unmarshal(data, &nfeDocument)
 	if err != nil {
-		return nfe.NfeDocument{}, err
+		return nfe.NFeDocument{}, err
 	}
 	return nfeDocument, nil
 }
 
-// func FromNfeDocument(nfeDocument nfe.NfeDocument) ([]byte, error) {
+// func FromNFeDocument(nfeDocument nfe.NFeDocument) ([]byte, error) {
 // 	data, err := json.Marshal(nfeDocument)
 // 	if err != nil {
 // 		return nil, err
@@ -26,17 +26,17 @@ func ToNfeDocument(data []byte) (nfe.NfeDocument, error) {
 // 	return data, nil
 // }
 
-func ToNfeDocuments(data []byte) (nfe.NfeDocuments, error) {
-	var NfeDocuments nfe.NfeDocuments
-	err := json.Unmarshal(data, &NfeDocuments)
+func ToNFeDocuments(data []byte) (nfe.NFeDocuments, error) {
+	var NFeDocuments nfe.NFeDocuments
+	err := json.Unmarshal(data, &NFeDocuments)
 	if err != nil {
-		return nfe.NfeDocuments{}, err
+		return nfe.NFeDocuments{}, err
 	}
-	return NfeDocuments, nil
+	return NFeDocuments, nil
 }
 
-func FromNfeDocuments(NfeDocuments nfe.NfeDocuments) ([]byte, error) {
-	data, err := json.Marshal(NfeDocuments)
+func FromNFeDocuments(NFeDocuments nfe.NFeDocuments) ([]byte, error) {
+	data, err := json.Marshal(NFeDocuments)
 	if err != nil {
 		return nil, err
 	}

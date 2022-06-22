@@ -41,9 +41,9 @@ func (adapter *Adapter) receiver(request insert.Request) error {
 		return err
 	}
 
-	nfeDocument := nfe.NfeDocument{
+	nfeDocument := nfe.NFeDocument{
 		RawXml:         request.XML,
-		NfeXmlDocument: xmlDocument,
+		NFeXmlDocument: xmlDocument,
 	}
 
 	err = adapter.repository.Save(nfeDocument)
@@ -54,8 +54,8 @@ func (adapter *Adapter) receiver(request insert.Request) error {
 	return nil
 }
 
-func (adapter *Adapter) responder(isNewNfe bool) insert.Response {
+func (adapter *Adapter) responder(isNewNFe bool) insert.Response {
 	return insert.Response{
-		IsNewNfe: isNewNfe,
+		IsNewNFe: isNewNFe,
 	}
 }

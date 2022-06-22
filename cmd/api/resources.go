@@ -46,14 +46,14 @@ func GetConnection() *gorm.DB {
 	return db
 }
 
-func NewNfeRepository() nfe.Repository {
+func NewNFeRepository() nfe.Repository {
 	switch config.Repository.Type {
 	case "INFILE":
-		return impltnfe.NewNfeInfileRepository(config.Repository.FilePath)
+		return impltnfe.NewNFeInfileRepository(config.Repository.FilePath)
 	case "INMEMORY":
-		return impltnfe.NewNfeInMemoryRepository()
+		return impltnfe.NewNFeInMemoryRepository()
 	case "POSTGRESQL":
-		return impltnfe.NewNfePostgresqlRepository(GetConnection())
+		return impltnfe.NewNFePostgresqlRepository(GetConnection())
 	default:
 		panic(errors.New("bad repository, check env variables"))
 	}
