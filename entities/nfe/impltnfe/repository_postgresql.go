@@ -2,6 +2,7 @@ package impltnfe
 
 import (
 	"errors"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -15,11 +16,17 @@ type nfePostgresqlRepository struct {
 }
 
 type postgresModel struct {
-	gorm.Model
-	RawXml string
-	NFeId  string
-	CNPJ   string
-	VNF    string
+	ID        int       `gorm:"primaryKey;autoIncrement:true;not null"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+	RawXml    string
+	NfeId     string
+	CNPJ      string
+	VNF       string
+}
+
+func (postgresModel) TableName() string {
+	return "nfe"
 }
 
 func NewNFePostgresqlRepository(database *gorm.DB) nfe.Repository {
@@ -70,7 +77,7 @@ func toPostgresModel(nfeDocument nfe.NFeDocument) (postgresModel, error) {
 
 	return postgresModel{
 		RawXml: nfeDocument.RawXml,
-		NFeId:  nfeDocument.NFeXmlDocument.NFe.InfNFe.Id,
+		NfeId:  nfeDocument.NFeXmlDocument.NFe.InfNFe.Id,
 		CNPJ:   nfeDocument.NFeXmlDocument.NFe.InfNFe.Emit.CNPJ,
 		VNF:    nfeDocument.NFeXmlDocument.NFe.InfNFe.Total.ICMSTot.VNF,
 	}, nil
@@ -78,7 +85,7 @@ func toPostgresModel(nfeDocument nfe.NFeDocument) (postgresModel, error) {
 
 func fromPostgresModel(postgresModel postgresModel) (nfe.NFeDocument, error) {
 	if postgresModel.RawXml == "" ||
-		postgresModel.NFeId == "" ||
+		postgresModel.NfeId == "" ||
 		postgresModel.CNPJ == "" ||
 		postgresModel.VNF == "" {
 		return nfe.NFeDocument{}, customerrors.New("INVALID_POSTGRES_MODEL", "Postgres model is invalid", nil)
@@ -89,7 +96,7 @@ func fromPostgresModel(postgresModel postgresModel) (nfe.NFeDocument, error) {
 		NFeXmlDocument: xml.XmlDocument{
 			NFe: xml.NFeField{
 				InfNFe: xml.InfNFeField{
-					Id: postgresModel.NFeId,
+					Id: postgresModel.NfeId,
 					Emit: xml.EmitField{
 						CNPJ: postgresModel.CNPJ,
 					},
@@ -103,11 +110,3 @@ func fromPostgresModel(postgresModel postgresModel) (nfe.NFeDocument, error) {
 		},
 	}, nil
 }
-
-// TODO CRIAR O BANCO DE DADOS E A TABELA
-// TODO TESTAR A CONEXAO
-// TODO TESTAR A INSERCAO DE UM NOVO REGISTRO
-// TODO TESTAR A INSERCAO DE UM REGISTRO QUE JA EXISTE
-// TODO TESTAR A BUSCA POR ID
-// TODO TESTAR A BUSCA POR ID QUE NAO EXISTE
-// TODO TESTAR A BUSCA POR ID QUE JA EXISTE

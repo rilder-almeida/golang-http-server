@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS
     nfe (
-        ID int,
-        CreatedAt timestamp,
-        UpdatedAt timestamp,
-        DeletedAt timestamp,
-        RawXml text,
-	    NFeId varchar(255),
-	    CNPJ   varchar(255),
-	    VNF    varchar(255)
+        id SERIAL,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP,
+        raw_xml TEXT,
+	    nfe_id VARCHAR(255),
+	    cnpj   VARCHAR(255),
+	    vnf    VARCHAR(255),
+        PRIMARY KEY (id)
     );
