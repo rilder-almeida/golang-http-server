@@ -5,18 +5,18 @@ import (
 	"github.com/golang-http-server/shared"
 )
 
-type nfeInfileRepository struct {
+type nfeFileRepository struct {
 	json_file_path string
 }
 
-func NewNFeInfileRepository(json_file_path string) nfe.Repository {
-	return &nfeInfileRepository{
+func NewNFeFileRepository(json_file_path string) nfe.Repository {
+	return &nfeFileRepository{
 		json_file_path: json_file_path,
 	}
 }
 
-func (repository *nfeInfileRepository) FindByID(id string) (nfe.NFeDocument, error) {
-	store, err := repository.loadInFileData()
+func (repository *nfeFileRepository) FindByID(id string) (nfe.NFeDocument, error) {
+	store, err := repository.loadFileData()
 	if err != nil {
 		return nfe.NFeDocument{}, err
 	}
@@ -30,18 +30,18 @@ func (repository *nfeInfileRepository) FindByID(id string) (nfe.NFeDocument, err
 	return nfe.NFeDocument{}, nfe.ErrNotFound
 }
 
-func (repository *nfeInfileRepository) Save(nfeDocument nfe.NFeDocument) error {
-	store, err := repository.loadInFileData()
+func (repository *nfeFileRepository) Save(nfeDocument nfe.NFeDocument) error {
+	store, err := repository.loadFileData()
 	if err != nil {
 		return err
 	}
 
 	store = append(store, nfeDocument)
 
-	return repository.saveInFileData(store)
+	return repository.saveFileData(store)
 }
 
-func (repository *nfeInfileRepository) loadInFileData() (nfe.NFeDocuments, error) {
+func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
 	data, err := shared.FromFile(repository.json_file_path)
 	if err != nil {
 		return nfe.NFeDocuments{}, err
@@ -58,7 +58,7 @@ func (repository *nfeInfileRepository) loadInFileData() (nfe.NFeDocuments, error
 	return store, nil
 }
 
-func (repository *nfeInfileRepository) saveInFileData(store nfe.NFeDocuments) error {
+func (repository *nfeFileRepository) saveFileData(store nfe.NFeDocuments) error {
 	data, err := shared.FromNFeDocuments(store)
 	if err != nil {
 		return err

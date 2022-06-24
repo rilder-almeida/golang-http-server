@@ -48,10 +48,10 @@ func GetConnection() *gorm.DB {
 
 func NewNFeRepository() nfe.Repository {
 	switch config.Repository.Type {
-	case "INFILE":
-		return impltnfe.WrapRepositoryWithCache(impltnfe.NewNFeInfileRepository(config.Repository.FilePath))
-	case "INMEMORY":
-		return impltnfe.WrapRepositoryWithCache(impltnfe.NewNFeInMemoryRepository())
+	case "FILE":
+		return impltnfe.WrapRepositoryWithCache(impltnfe.NewNFeFileRepository(config.Repository.FilePath))
+	case "MEMORY":
+		return impltnfe.WrapRepositoryWithCache(impltnfe.NewNFeMemoryRepository())
 	case "POSTGRESQL":
 		return impltnfe.WrapRepositoryWithCache(impltnfe.NewNFePostgresqlRepository(GetConnection()))
 	default:
