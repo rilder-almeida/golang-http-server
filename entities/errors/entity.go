@@ -1,5 +1,7 @@
 package errors
 
+// TODO Change error struct and method New
+
 import (
 	"fmt"
 )

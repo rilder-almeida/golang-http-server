@@ -1,6 +1,5 @@
 package shared
 
-// FIXME
 import (
 	"encoding/base64"
 	"encoding/json"
