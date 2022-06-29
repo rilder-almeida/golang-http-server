@@ -3,9 +3,9 @@ module github.com/golang-http-server
 go 1.18
 
 require (
-	github.com/arquivei/foundationkit v0.2.1
+	github.com/arquivei/foundationkit v0.2.5
 	github.com/prometheus/client_golang v1.12.2
-	github.com/rs/zerolog v1.26.1
+	github.com/rs/zerolog v1.27.0
 	gorm.io/driver/postgres v1.3.7
 	gorm.io/gorm v1.23.5
 )
@@ -23,6 +23,8 @@ require (
 	github.com/jackc/pgx/v4 v4.16.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
 )
 
@@ -44,7 +46,7 @@ require (
 	github.com/prometheus/common v0.34.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	go.opencensus.io v0.23.0 // indirect
-	golang.org/x/net v0.0.0-20220531201128-c960675eff93 // indirect
+	golang.org/x/net v0.0.0-20220624214902-1bab6f366d9e // indirect
 	golang.org/x/oauth2 v0.0.0-20220524215830-622c5d57e401 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect

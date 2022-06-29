@@ -25,15 +25,15 @@ var (
 
 func getHTTPServer() *http.Server {
 	if httpServer == nil {
-		r := mux.NewRouter()
+		router := mux.NewRouter()
 
-		r.PathPrefix("/nfe/get").Handler(apiget.MakeHTTPHandler(getGetEndpoint()))
-		r.PathPrefix("/metrics").Handler(promhttp.Handler())
+		router.PathPrefix("/nfe").Handler(apiget.MakeHTTPHandler(getGetEndpoint()))
+		router.PathPrefix("/metrics").Handler(promhttp.Handler())
 
 		httpAddr := ":" + config.HTTP.Port
-		httpServer := &http.Server{
+		httpServer = &http.Server{
 			Addr:    httpAddr,
-			Handler: r,
+			Handler: router,
 		}
 
 		app.RegisterShutdownHandler(
@@ -43,6 +43,10 @@ func getHTTPServer() *http.Server {
 				Handler:  httpServer.Shutdown,
 				Policy:   app.ErrorPolicyAbort,
 			})
+	}
+
+	if httpServer == nil {
+		panic("http server failed to initialize")
 	}
 
 	return httpServer

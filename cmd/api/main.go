@@ -14,7 +14,8 @@ package main
 // 	shutdownPriorityHTTP = app.ShutdownPriority(100)
 // )
 
-// func main() {
+func main() {}
+
 // 	app.SetupConfig(&config)
 
 // 	ctx := fklog.SetupLoggerWithContext(context.Background(), config.Log, version)
