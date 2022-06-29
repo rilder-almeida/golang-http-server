@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	encodingXml "encoding/xml"
+	"net/http"
 
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/xml"
@@ -17,14 +18,6 @@ func ToNFeDocument(data []byte) (nfe.NFeDocument, error) {
 	}
 	return nfeDocument, nil
 }
-
-// func FromNFeDocument(nfeDocument nfe.NFeDocument) ([]byte, error) {
-// 	data, err := json.Marshal(nfeDocument)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return data, nil
-// }
 
 func ToNFeDocuments(data []byte) (nfe.NFeDocuments, error) {
 	var NFeDocuments nfe.NFeDocuments
@@ -52,18 +45,15 @@ func ToXmlDocument(data []byte) (xml.XmlDocument, error) {
 	return xmlDocument, nil
 }
 
-// func FromXmlDocument(xmlDocument xml.XmlDocument) ([]byte, error) {
-// 	data, err := json.Marshal(xmlDocument)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return data, nil
-// }
-
 func FromBase64ToBase32(data []byte) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(string(data))
 }
 
 func FromBase32ToBase64(data []byte) ([]byte, error) {
 	return []byte(base64.StdEncoding.EncodeToString(data)), nil
+}
+
+func EncodeJSONResponse(w http.ResponseWriter, response interface{}) error {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	return json.NewEncoder(w).Encode(response)
 }

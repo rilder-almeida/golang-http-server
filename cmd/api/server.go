@@ -1,124 +1,114 @@
 package main
 
 import (
-	"io"
-	"io/ioutil"
 	"net/http"
 
 	customerrors "github.com/golang-http-server/entities/errors"
-	"github.com/golang-http-server/entities/httpmessage"
-	"github.com/golang-http-server/entities/nfe"
-	"github.com/golang-http-server/services/get"
-	"github.com/golang-http-server/services/get/apiget"
-	"github.com/golang-http-server/services/get/implget"
-	"github.com/golang-http-server/services/insert"
-	"github.com/golang-http-server/services/insert/apiinsert"
-	"github.com/golang-http-server/services/insert/implinsert"
 )
 
-type NFeHandler struct {
-	GetService    get.Service
-	InsertService insert.Service
-}
+// type NFeHandler struct {
+// 	GetService    get.Service
+// 	InsertService insert.Service
+// }
 
-func NewRepository() nfe.Repository {
-	return NewNFeRepository()
-}
+// func NewRepository() nfe.Repository {
+// 	return NewNFeRepository()
+// }
 
-func NewHandler() *NFeHandler {
-	repository := NewRepository()
-	return &NFeHandler{
-		GetService:    get.WrapServiceWithMetrics(get.NewService(implget.NewAdapter(repository))),
-		InsertService: insert.WrapServiceWithMetrics(insert.NewService(implinsert.NewAdapter(repository))),
-	}
-}
+// func NewHandler() *NFeHandler {
+// 	repository := NewRepository()
+// 	return &NFeHandler{
+// 		GetService:    get.WrapServiceWithMetrics(get.NewService(implget.NewAdapter(repository))),
+// 		InsertService: insert.WrapServiceWithMetrics(insert.NewService(implinsert.NewAdapter(repository))),
+// 	}
+// }
 
-func (n *NFeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case http.MethodPost:
-		n.processInsertService(w, r)
-	case http.MethodGet:
-		n.processGetService(w, r)
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed) // 405
-	}
-}
+// func (n *NFeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+// 	switch r.Method {
+// 	case http.MethodPost:
+// 		n.processInsertService(w, r)
+// 	case http.MethodGet:
+// 		n.processGetService(w, r)
+// 	default:
+// 		w.WriteHeader(http.StatusMethodNotAllowed) // 405
+// 	}
+// }
 
-func (n *NFeHandler) processInsertService(w http.ResponseWriter, r *http.Request) {
-	body, err := requestBodyReader(r.Body)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// func (n *NFeHandler) processInsertService(w http.ResponseWriter, r *http.Request) {
+// 	body, err := requestBodyReader(r.Body)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	httpMessage := httpmessage.New(body, http.StatusOK)
+// 	httpMessage := httpmessage.New(body, http.StatusOK)
 
-	parsedRequest, err := apiinsert.HttpMessageToRequest(httpMessage)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// 	parsedRequest, err := apiinsert.HttpMessageToRequest(httpMessage)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	response, err := n.InsertService.Insert(parsedRequest)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// 	response, err := n.InsertService.Insert(parsedRequest)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	parsedResponse, err := apiinsert.ResponseToHttpMessage(response)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// 	parsedResponse, err := apiinsert.ResponseToHttpMessage(response)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
-}
+// 	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
+// }
 
-func (n *NFeHandler) processGetService(w http.ResponseWriter, r *http.Request) {
-	body, err := requestBodyReader(r.Body)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// func (n *NFeHandler) processGetService(w http.ResponseWriter, r *http.Request) {
+// 	body, err := requestBodyReader(r.Body)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	httpMessage := httpmessage.New(body, http.StatusOK)
+// 	httpMessage := httpmessage.New(body, http.StatusOK)
 
-	parsedRequest, err := apiget.HttpMessageToRequest(httpMessage)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// 	parsedRequest, err := apiget.HttpMessageToRequest(httpMessage)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	response, err := n.GetService.Get(parsedRequest)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// 	response, err := n.GetService.Get(parsedRequest)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	parsedResponse, err := apiget.ResponseToHttpMessage(response)
-	if err != nil {
-		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
-		return
-	}
+// 	parsedResponse, err := apiget.ResponseToHttpMessage(response)
+// 	if err != nil {
+// 		responseDispatcher(w, httpmessage.New([]byte(err.Error()), StatusCode(err)))
+// 		return
+// 	}
 
-	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
-}
+// 	responseDispatcher(w, httpmessage.New(parsedResponse.BodyData, http.StatusOK))
+// }
 
-func responseDispatcher(w http.ResponseWriter, httpMessage httpmessage.HttpMessage) {
-	w.Header().Set("Content-Type", httpMessage.ContentType)
-	w.WriteHeader(httpMessage.HttpStatus)
-	w.Write(httpMessage.BodyData)
-}
+// func responseDispatcher(w http.ResponseWriter, httpMessage httpmessage.HttpMessage) {
+// 	w.Header().Set("Content-Type", httpMessage.ContentType)
+// 	w.WriteHeader(httpMessage.HttpStatus)
+// 	w.Write(httpMessage.BodyData)
+// }
 
-func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
-	body, err := ioutil.ReadAll(bodyRequest)
-	defer bodyRequest.Close()
+// func requestBodyReader(bodyRequest io.ReadCloser) ([]byte, error) {
+// 	body, err := ioutil.ReadAll(bodyRequest)
+// 	defer bodyRequest.Close()
 
-	if err != nil {
-		return nil, customerrors.New("INVALID_REQUEST", "Can not read the request body", err)
-	}
-	return body, nil
-}
+// 	if err != nil {
+// 		return nil, customerrors.New("INVALID_REQUEST", "Can not read the request body", err)
+// 	}
+// 	return body, nil
+// }
 
 func StatusCode(err error) int {
 	parsedError, ok := err.(customerrors.Error)

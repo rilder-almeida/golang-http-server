@@ -48,10 +48,10 @@ func WrapServiceWithMetrics(next Service) Service {
 func (m *metricsMiddleware) Get(request Request) (Response, error) {
 	response, err := m.next.Get(request)
 	if err != nil {
-		m.metrics.ResponseFailedCounter.WithLabelValues("GET", "/nfe/v1", err.(customerrors.Error).ErrorCode).Inc()
+		m.metrics.ResponseFailedCounter.WithLabelValues("GET", "/nfe/get", err.(customerrors.Error).ErrorCode).Inc()
 		return Response{}, err
 	}
-	m.metrics.ResponseSuccessedCounter.WithLabelValues("GET", "/nfe/v1").Inc()
+	m.metrics.ResponseSuccessedCounter.WithLabelValues("GET", "/nfe/get").Inc()
 
 	return response, nil
 }
