@@ -42,6 +42,7 @@ func (repository *nfeFileRepository) Save(nfeDocument nfe.NFeDocument) error {
 }
 
 func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
+	// FIXME refatorar return de errors
 	data, err := shared.FromFile(repository.json_file_path)
 	if err != nil {
 		return nfe.NFeDocuments{}, err

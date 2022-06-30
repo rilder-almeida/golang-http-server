@@ -36,6 +36,7 @@ func NewNFePostgresqlRepository(database *gorm.DB) nfe.Repository {
 }
 
 func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NFeDocument, error) {
+
 	var postgresModel postgresModel
 	result := repository.db.Where("nfe_id = ?", id).Table("nfe").First(&postgresModel)
 	if result.RowsAffected == 0 || errors.Is(result.Error, gorm.ErrRecordNotFound) {

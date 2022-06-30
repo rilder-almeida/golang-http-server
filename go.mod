@@ -11,6 +11,11 @@ require (
 )
 
 require (
+	cloud.google.com/go/monitoring v1.5.0 // indirect
+	cloud.google.com/go/trace v1.2.0 // indirect
+	contrib.go.opencensus.io/exporter/stackdriver v0.13.13 // indirect
+	github.com/aws/aws-sdk-go v1.44.28 // indirect
+	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -23,9 +28,12 @@ require (
 	github.com/jackc/pgx/v4 v4.16.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.4 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
+	github.com/oklog/ulid v1.3.1 // indirect
+	github.com/prometheus/prometheus v0.36.0 // indirect
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 )
 
 require (
