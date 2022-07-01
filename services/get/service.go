@@ -1,9 +1,7 @@
 package get
 
 import (
-	"errors"
-
-	customerrors "github.com/golang-http-server/entities/errors"
+	fkerrors "github.com/arquivei/foundationkit/errors"
 )
 
 type Service interface {
@@ -29,15 +27,16 @@ func (s *service) Get(request Request) (Response, error) {
 
 	response, err := s.getGateway.Processor(request)
 	if err != nil {
-		return Response{}, customerrors.New("FAILED_GET_NFE", "ID can not be processed by the GET gateway", err)
+		return Response{}, err
 	}
 	return response, nil
 }
 
 // assert that the http.request is valid and can be processed
 func (s *service) validateRequest(request *Request) error {
+	const op = fkerrors.Op("get.validateRequest")
 	if request.Id == "" {
-		return customerrors.New("ID_IS_EMPTY", "Id field cannot be empty", errors.New("ID is empty"))
+		return fkerrors.E(op, ErrCodeInvalidRequest)
 	}
 	return nil
 }

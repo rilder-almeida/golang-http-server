@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"net/http"
 
+	fkerrors "github.com/arquivei/foundationkit/errors"
 	"github.com/go-kit/kit/endpoint"
 	kithttp "github.com/go-kit/kit/transport/http"
+	"github.com/gorilla/mux"
+
 	"github.com/golang-http-server/services/get/apiget/internal"
 	"github.com/golang-http-server/shared"
-	"github.com/gorilla/mux"
 )
 
 func MakeHTTPHandler(endpoint endpoint.Endpoint) http.Handler {
@@ -25,22 +27,24 @@ func MakeHTTPHandler(endpoint endpoint.Endpoint) http.Handler {
 }
 
 func decodeHTTPRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	const op = fkerrors.Op("apiget.decodeHTTPRequest")
+
 	var httpRequest internal.GetHTTPRequest
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&httpRequest.Body)
 	if err != nil {
-		// TODO: http custom error
-		return nil, err
+		return nil, fkerrors.E(op, err)
 	}
 	return translateToEndpointRequest(httpRequest), nil
 }
 
 func encodeHTTPResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
+	const op = fkerrors.Op("apiget.encodeHTTPResponse")
+
 	httpResponse := translateToHTTPResponse(response.(GetEndpointResponse))
 	err := shared.EncodeJSONResponse(w, httpResponse)
 	if err != nil {
-		// TODO: http custom error
-		return err
+		return fkerrors.E(op, err)
 	}
 	return nil
 }

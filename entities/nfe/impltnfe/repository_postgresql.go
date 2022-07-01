@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
+	fkerrors "github.com/arquivei/foundationkit/errors"
 	"gorm.io/gorm"
 
-	customerrors "github.com/golang-http-server/entities/errors"
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/xml"
 )
@@ -36,14 +36,15 @@ func NewNFePostgresqlRepository(database *gorm.DB) nfe.Repository {
 }
 
 func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NFeDocument, error) {
+	const op = fkerrors.Op("nfe.impltnfe.postgresql.FindByID")
 
 	var postgresModel postgresModel
 	result := repository.db.Where("nfe_id = ?", id).Table("nfe").First(&postgresModel)
 	if result.RowsAffected == 0 || errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nfe.NFeDocument{}, nfe.ErrNotFound
+		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeDocumentNotFound)
 	}
 	if result.Error != nil {
-		return nfe.NFeDocument{}, result.Error
+		return nfe.NFeDocument{}, fkerrors.E(op, result.Error)
 	}
 
 	document, err := fromPostgresModel(postgresModel)
@@ -51,10 +52,12 @@ func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NFeDocument,
 		return nfe.NFeDocument{}, err
 	}
 
-	return document, nfe.ErrAlreadyExists
+	return document, nil
 }
 
 func (repository *nfePostgresqlRepository) Save(nfeDocument nfe.NFeDocument) error {
+	const op fkerrors.Op = "nfe.impltnfe.postgresql.Save"
+
 	postgresModel, err := toPostgresModel(nfeDocument)
 	if err != nil {
 		return err
@@ -62,18 +65,24 @@ func (repository *nfePostgresqlRepository) Save(nfeDocument nfe.NFeDocument) err
 
 	result := repository.db.Create(&postgresModel)
 	if result.RowsAffected == 0 {
-		return customerrors.New("FAILED_TO_SAVE", "Failed to save on Postegres", nil)
+		return fkerrors.E(op, nfe.ErrCodeSaveDocument)
 	}
 
-	return result.Error
+	if result.Error != nil {
+		fkerrors.E(op, result.Error)
+	}
+
+	return nil
 }
 
 func toPostgresModel(nfeDocument nfe.NFeDocument) (postgresModel, error) {
+	const op = fkerrors.Op("nfe.impltnfe.postgresql.toPostgresModel")
+
 	if nfeDocument.RawXml == "" ||
 		nfeDocument.NFeXmlDocument.NFe.InfNFe.Id == "" ||
 		nfeDocument.NFeXmlDocument.NFe.InfNFe.Emit.CNPJ == "" ||
 		nfeDocument.NFeXmlDocument.NFe.InfNFe.Total.ICMSTot.VNF == "" {
-		return postgresModel{}, customerrors.New("INVALID_NFEDOCUMENT", "Invalid NFeDocument", nil)
+		return postgresModel{}, fkerrors.E(op, nfe.ErrCodeProcessDocument)
 	}
 
 	return postgresModel{
@@ -85,11 +94,13 @@ func toPostgresModel(nfeDocument nfe.NFeDocument) (postgresModel, error) {
 }
 
 func fromPostgresModel(postgresModel postgresModel) (nfe.NFeDocument, error) {
+	const op = fkerrors.Op("nfe.impltnfe.postgresql.fromPostgresModel")
+
 	if postgresModel.RawXml == "" ||
 		postgresModel.NfeId == "" ||
 		postgresModel.CNPJ == "" ||
 		postgresModel.VNF == "" {
-		return nfe.NFeDocument{}, customerrors.New("INVALID_POSTGRES_MODEL", "Postgres model is invalid", nil)
+		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeProcessDocument)
 	}
 
 	return nfe.NFeDocument{

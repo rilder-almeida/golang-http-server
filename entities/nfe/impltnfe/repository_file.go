@@ -1,6 +1,7 @@
 package impltnfe
 
 import (
+	fkerrors "github.com/arquivei/foundationkit/errors"
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/shared"
 )
@@ -16,6 +17,8 @@ func NewNFeFileRepository(json_file_path string) nfe.Repository {
 }
 
 func (repository *nfeFileRepository) FindByID(id string) (nfe.NFeDocument, error) {
+	const op = fkerrors.Op("nfe.impltnfe.file.FindByID")
+
 	store, err := repository.loadFileData()
 	if err != nil {
 		return nfe.NFeDocument{}, err
@@ -23,11 +26,11 @@ func (repository *nfeFileRepository) FindByID(id string) (nfe.NFeDocument, error
 
 	for _, nfeDocument := range store {
 		if nfeDocument.NFeXmlDocument.NFe.InfNFe.Id == id {
-			return nfeDocument, nfe.ErrAlreadyExists
+			return nfeDocument, nil
 		}
 	}
 
-	return nfe.NFeDocument{}, nfe.ErrNotFound
+	return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeDocumentNotFound)
 }
 
 func (repository *nfeFileRepository) Save(nfeDocument nfe.NFeDocument) error {
@@ -42,10 +45,11 @@ func (repository *nfeFileRepository) Save(nfeDocument nfe.NFeDocument) error {
 }
 
 func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
-	// FIXME refatorar return de errors
+	const op = fkerrors.Op("nfe.impltnfe.file.loadFileData")
+
 	data, err := shared.FromFile(repository.json_file_path)
 	if err != nil {
-		return nfe.NFeDocuments{}, err
+		return nfe.NFeDocuments{}, fkerrors.E(op, err)
 	}
 
 	if string(data) == "" {
@@ -54,20 +58,22 @@ func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
 
 	store, err := shared.ToNFeDocuments(data)
 	if err != nil {
-		return store, err
+		return store, fkerrors.E(op, err)
 	}
 	return store, nil
 }
 
 func (repository *nfeFileRepository) saveFileData(store nfe.NFeDocuments) error {
+	const op = fkerrors.Op("nfe.impltnfe.file.saveFileData")
+
 	data, err := shared.FromNFeDocuments(store)
 	if err != nil {
-		return err
+		return fkerrors.E(op, err)
 	}
 
 	err = shared.ToFile(repository.json_file_path, data)
 	if err != nil {
-		return err
+		return fkerrors.E(op, err)
 	}
 	return nil
 }

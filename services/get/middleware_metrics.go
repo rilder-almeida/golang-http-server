@@ -3,9 +3,9 @@ package get
 import (
 	"log"
 
-	customerrors "github.com/golang-http-server/entities/errors"
-	"github.com/golang-http-server/entities/metrics"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/golang-http-server/entities/metrics"
 )
 
 type metricsMiddleware struct {
@@ -48,7 +48,7 @@ func WrapServiceWithMetrics(next Service) Service {
 func (m *metricsMiddleware) Get(request Request) (Response, error) {
 	response, err := m.next.Get(request)
 	if err != nil {
-		m.metrics.ResponseFailedCounter.WithLabelValues("GET", "/nfe/get", err.(customerrors.Error).ErrorCode).Inc()
+		m.metrics.ResponseFailedCounter.WithLabelValues("GET", "/nfe/get", err.Error()).Inc()
 		return Response{}, err
 	}
 	m.metrics.ResponseSuccessedCounter.WithLabelValues("GET", "/nfe/get").Inc()

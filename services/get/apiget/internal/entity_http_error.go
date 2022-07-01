@@ -5,14 +5,12 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/golang-http-server/services/get"
-
 	"github.com/arquivei/foundationkit/apiutil"
-	"github.com/arquivei/foundationkit/errors"
+	fkerrors "github.com/arquivei/foundationkit/errors"
 	kithttp "github.com/go-kit/kit/transport/http"
+	"github.com/golang-http-server/entities/nfe"
+	"github.com/golang-http-server/services/get"
 )
-
-var errCodeInvalidRequest = errors.Code("INVALID_REQUEST")
 
 // GetHTTPResponseError é retornado em caso de erro. O campo `code` contém um código
 // para ser usado no tratamento dos erros enquanto que o campo `message` contém um texto descritivo
@@ -59,10 +57,13 @@ func encodeHTTPError(ctx context.Context, err error) interface{} {
 }
 
 func getHTTPStatusCode(err error) int {
-	// FIXME implementar errors code do http e service
-	switch errors.GetCode(err) {
-	case get.ErrCodeDocumentNotFound:
+	switch fkerrors.GetCode(err) {
+	case nfe.ErrCodeDocumentNotFound:
 		return http.StatusNotFound
+	case nfe.ErrCodeProcessDocument, nfe.ErrCodeSaveDocument:
+		return http.StatusInternalServerError
+	case get.ErrCodeInvalidRequest:
+		return http.StatusBadRequest
 	}
 	return apiutil.GetDefaultErrorHTTPStatusCode(err)
 }

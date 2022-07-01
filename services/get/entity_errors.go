@@ -1,7 +1,7 @@
 package get
 
-import "github.com/arquivei/foundationkit/errors"
+import fkerrors "github.com/arquivei/foundationkit/errors"
 
 var (
-	ErrCodeDocumentNotFound = errors.Code("DOCUMENT_NOT_FOUND")
+	ErrCodeInvalidRequest = fkerrors.Code("INVALID_REQUEST")
 )

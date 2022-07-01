@@ -3,6 +3,7 @@ package impltnfe
 import (
 	"sync"
 
+	fkerrors "github.com/arquivei/foundationkit/errors"
 	"github.com/golang-http-server/entities/nfe"
 )
 
@@ -17,13 +18,15 @@ func NewNFeMemoryRepository() nfe.Repository {
 }
 
 func (repository *nfeMemoryRepository) FindByID(id string) (nfe.NFeDocument, error) {
+	const op = fkerrors.Op("nfe.impltnfe.memory.FindByID")
+
 	for _, nfeDocument := range repository.store {
 		if nfeDocument.NFeXmlDocument.NFe.InfNFe.Id == id {
-			return nfeDocument, nfe.ErrAlreadyExists
+			return nfeDocument, nil
 		}
 	}
 
-	return nfe.NFeDocument{}, nfe.ErrNotFound
+	return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeDocumentNotFound)
 }
 
 func (repository *nfeMemoryRepository) Save(nfeDocument nfe.NFeDocument) error {
