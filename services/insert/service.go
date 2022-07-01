@@ -1,9 +1,7 @@
 package insert
 
 import (
-	"errors"
-
-	customerrors "github.com/golang-http-server/entities/errors"
+	fkerrors "github.com/arquivei/foundationkit/errors"
 )
 
 type Service interface {
@@ -29,15 +27,16 @@ func (s *service) Insert(request Request) (Response, error) {
 
 	response, err := s.insertGateway.Processor(request)
 	if err != nil {
-		return Response{}, customerrors.New("FAILED_INSERT_XML", "Xml can not be processed by the INSERT gateway", err)
+		return Response{}, err
 	}
 	return response, nil
 }
 
-// assert that the http.request is valid and can be processed
+// TODO verificar ser a validação do request deve ser feita na camada de serviço ou endipoint
 func (s *service) validateRequest(request *Request) error {
+	const op = fkerrors.Op("insert.validateRequest")
 	if request.XML == "" {
-		return customerrors.New("XML_IS_EMPTY", "Xml field cannot be empty", errors.New("XML is empty"))
+		return fkerrors.E(op, ErrCodeInvalidRequest)
 	}
 	return nil
 }

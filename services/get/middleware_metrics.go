@@ -3,6 +3,7 @@ package get
 import (
 	"log"
 
+	fkerrors "github.com/arquivei/foundationkit/errors"
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/golang-http-server/entities/metrics"
@@ -48,7 +49,7 @@ func WrapServiceWithMetrics(next Service) Service {
 func (m *metricsMiddleware) Get(request Request) (Response, error) {
 	response, err := m.next.Get(request)
 	if err != nil {
-		m.metrics.ResponseFailedCounter.WithLabelValues("GET", "/nfe/get", err.Error()).Inc()
+		m.metrics.ResponseFailedCounter.WithLabelValues("GET", "/nfe/get", err.(fkerrors.Error).Code.String()).Inc()
 		return Response{}, err
 	}
 	m.metrics.ResponseSuccessedCounter.WithLabelValues("GET", "/nfe/get").Inc()

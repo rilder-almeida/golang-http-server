@@ -33,7 +33,7 @@ func decodeHTTPRequest(_ context.Context, r *http.Request) (interface{}, error) 
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&httpRequest.Body)
 	if err != nil {
-		return nil, fkerrors.E(op, err)
+		return nil, fkerrors.E(op, internal.ErrCodeInvalidRequest, fkerrors.KV("Decode", err))
 	}
 	return translateToEndpointRequest(httpRequest), nil
 }
@@ -44,7 +44,7 @@ func encodeHTTPResponse(_ context.Context, w http.ResponseWriter, response inter
 	httpResponse := translateToHTTPResponse(response.(GetEndpointResponse))
 	err := shared.EncodeJSONResponse(w, httpResponse)
 	if err != nil {
-		return fkerrors.E(op, err)
+		return fkerrors.E(op, internal.ErrCodeInvalidResponse, fkerrors.KV("Encode", err))
 	}
 	return nil
 }

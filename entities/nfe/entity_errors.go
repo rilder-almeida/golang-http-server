@@ -12,4 +12,6 @@ var (
 	ErrCodeProcessDocument = fkerrors.Code("FAILED_PROCESS_DOCUMENT")
 
 	ErrCodeSaveDocument = fkerrors.Code("FAILED_SAVE_DOCUMENT")
+
+	ErrCodeGetDocument = fkerrors.Code("FAILED_GET_DOCUMENT")
 )

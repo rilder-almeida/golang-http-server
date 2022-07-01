@@ -18,7 +18,7 @@ func NewNFeMemoryRepository() nfe.Repository {
 }
 
 func (repository *nfeMemoryRepository) FindByID(id string) (nfe.NFeDocument, error) {
-	const op = fkerrors.Op("nfe.impltnfe.memory.FindByID")
+	const op = fkerrors.Op("impltnfe.memory.FindByID")
 
 	for _, nfeDocument := range repository.store {
 		if nfeDocument.NFeXmlDocument.NFe.InfNFe.Id == id {

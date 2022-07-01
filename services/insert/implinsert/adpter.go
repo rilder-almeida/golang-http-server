@@ -1,6 +1,8 @@
 package implinsert
 
 import (
+	fkerrors "github.com/arquivei/foundationkit/errors"
+
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/services/insert"
 	"github.com/golang-http-server/shared"
@@ -17,41 +19,38 @@ func NewAdapter(repository nfe.Repository) insert.InsertGateway {
 }
 
 func (adapter *Adapter) Processor(request insert.Request) (insert.Response, error) {
-	err := adapter.receiver(request)
+	err, ok := adapter.receiver(request)
 	if err != nil {
-		if err == nfe.ErrAlreadyExists {
-			return adapter.responder(false), nil
-		}
 		return insert.Response{}, err
 	}
-	return adapter.responder(true), nil
+
+	return adapter.responder(ok), nil
 }
 
-func (adapter *Adapter) receiver(request insert.Request) error {
+func (adapter *Adapter) receiver(request insert.Request) (error, bool) {
+	const op = fkerrors.Op("implinsert.receiver")
+
 	xmlDocument, err := shared.ToXmlDocument([]byte(request.XML))
 	if err != nil {
-		return err
+		return fkerrors.E(op, fkerrors.KV("ToXmlDocument", err), insert.ErrCodeInvalidRequest), false
 	}
 
-	_, err = adapter.repository.FindByID(xmlDocument.NFe.InfNFe.Id)
-	if err != nfe.ErrNotFound {
-		return err
-	}
-	if err == nfe.ErrAlreadyExists {
-		return err
+	document, err := adapter.repository.FindByID(xmlDocument.NFe.InfNFe.Id)
+	if err.(fkerrors.Error).Code == nfe.ErrCodeDocumentNotFound && document.IsEmpty() {
+		nfeDocument := nfe.NFeDocument{
+			RawXml:         request.XML,
+			NFeXmlDocument: xmlDocument,
+		}
+
+		err = adapter.repository.Save(nfeDocument)
+		if err != nil {
+			return err, false
+		}
+
+		return nil, true
 	}
 
-	nfeDocument := nfe.NFeDocument{
-		RawXml:         request.XML,
-		NFeXmlDocument: xmlDocument,
-	}
-
-	err = adapter.repository.Save(nfeDocument)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err, false
 }
 
 func (adapter *Adapter) responder(isNewNFe bool) insert.Response {

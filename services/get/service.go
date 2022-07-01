@@ -32,7 +32,6 @@ func (s *service) Get(request Request) (Response, error) {
 	return response, nil
 }
 
-// assert that the http.request is valid and can be processed
 func (s *service) validateRequest(request *Request) error {
 	const op = fkerrors.Op("get.validateRequest")
 	if request.Id == "" {

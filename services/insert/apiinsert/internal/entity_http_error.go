@@ -4,14 +4,15 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/golang-http-server/services/insert"
-
 	"github.com/arquivei/foundationkit/apiutil"
 	fkerrors "github.com/arquivei/foundationkit/errors"
 	kithttp "github.com/go-kit/kit/transport/http"
+	"github.com/golang-http-server/entities/nfe"
+	"github.com/golang-http-server/services/insert"
 )
 
-var errCodeInvalidRequest = fkerrors.Code("INVALID_REQUEST")
+var ErrCodeInvalidRequest = fkerrors.Code("INVALID_REQUEST")
+var ErrCodeInvalidResponse = fkerrors.Code("INVALID_RESPONSE")
 
 // InsertHTTPResponseError é retornado em caso de erro. O campo `code` contém um código
 // para ser usado no tratamento dos erros enquanto que o campo `message` contém um texto descritivo
@@ -58,10 +59,13 @@ func encodeHTTPError(ctx context.Context, err error) interface{} {
 }
 
 func insertHTTPStatusCode(err error) int {
-	// FIXME implementar errors code do http e service
 	switch fkerrors.GetCode(err) {
-	case insert.ErrCodeDocumentNotFound:
+	case nfe.ErrCodeDocumentNotFound:
 		return http.StatusNotFound
+	case nfe.ErrCodeProcessDocument, nfe.ErrCodeSaveDocument, nfe.ErrCodeGetDocument, ErrCodeInvalidResponse:
+		return http.StatusInternalServerError
+	case insert.ErrCodeInvalidRequest, ErrCodeInvalidRequest:
+		return http.StatusBadRequest
 	}
 	return apiutil.GetDefaultErrorHTTPStatusCode(err)
 }

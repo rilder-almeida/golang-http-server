@@ -12,6 +12,9 @@ import (
 	"github.com/golang-http-server/services/get"
 )
 
+var ErrCodeInvalidRequest = fkerrors.Code("INVALID_REQUEST")
+var ErrCodeInvalidResponse = fkerrors.Code("INVALID_RESPONSE")
+
 // GetHTTPResponseError é retornado em caso de erro. O campo `code` contém um código
 // para ser usado no tratamento dos erros enquanto que o campo `message` contém um texto descritivo
 // sobre o que aconteceu. O campo `message` não deve ser usado para ocmparação pois não há garantias
@@ -60,9 +63,9 @@ func getHTTPStatusCode(err error) int {
 	switch fkerrors.GetCode(err) {
 	case nfe.ErrCodeDocumentNotFound:
 		return http.StatusNotFound
-	case nfe.ErrCodeProcessDocument, nfe.ErrCodeSaveDocument:
+	case nfe.ErrCodeProcessDocument, nfe.ErrCodeSaveDocument, nfe.ErrCodeGetDocument, ErrCodeInvalidResponse:
 		return http.StatusInternalServerError
-	case get.ErrCodeInvalidRequest:
+	case get.ErrCodeInvalidRequest, ErrCodeInvalidRequest:
 		return http.StatusBadRequest
 	}
 	return apiutil.GetDefaultErrorHTTPStatusCode(err)

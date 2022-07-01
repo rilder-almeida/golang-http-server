@@ -36,7 +36,7 @@ func NewNFePostgresqlRepository(database *gorm.DB) nfe.Repository {
 }
 
 func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NFeDocument, error) {
-	const op = fkerrors.Op("nfe.impltnfe.postgresql.FindByID")
+	const op = fkerrors.Op("impltnfe.postgresql.FindByID")
 
 	var postgresModel postgresModel
 	result := repository.db.Where("nfe_id = ?", id).Table("nfe").First(&postgresModel)
@@ -44,7 +44,7 @@ func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NFeDocument,
 		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeDocumentNotFound)
 	}
 	if result.Error != nil {
-		return nfe.NFeDocument{}, fkerrors.E(op, result.Error)
+		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeSaveDocument, fkerrors.KV("postgres", result.Error))
 	}
 
 	document, err := fromPostgresModel(postgresModel)
@@ -56,7 +56,7 @@ func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NFeDocument,
 }
 
 func (repository *nfePostgresqlRepository) Save(nfeDocument nfe.NFeDocument) error {
-	const op fkerrors.Op = "nfe.impltnfe.postgresql.Save"
+	const op fkerrors.Op = "impltnfe.postgresql.Save"
 
 	postgresModel, err := toPostgresModel(nfeDocument)
 	if err != nil {
@@ -69,14 +69,14 @@ func (repository *nfePostgresqlRepository) Save(nfeDocument nfe.NFeDocument) err
 	}
 
 	if result.Error != nil {
-		fkerrors.E(op, result.Error)
+		fkerrors.E(op, nfe.ErrCodeSaveDocument, fkerrors.KV("postgres", result.Error))
 	}
 
 	return nil
 }
 
 func toPostgresModel(nfeDocument nfe.NFeDocument) (postgresModel, error) {
-	const op = fkerrors.Op("nfe.impltnfe.postgresql.toPostgresModel")
+	const op = fkerrors.Op("impltnfe.postgresql.toPostgresModel")
 
 	if nfeDocument.RawXml == "" ||
 		nfeDocument.NFeXmlDocument.NFe.InfNFe.Id == "" ||
@@ -94,7 +94,7 @@ func toPostgresModel(nfeDocument nfe.NFeDocument) (postgresModel, error) {
 }
 
 func fromPostgresModel(postgresModel postgresModel) (nfe.NFeDocument, error) {
-	const op = fkerrors.Op("nfe.impltnfe.postgresql.fromPostgresModel")
+	const op = fkerrors.Op("impltnfe.postgresql.fromPostgresModel")
 
 	if postgresModel.RawXml == "" ||
 		postgresModel.NfeId == "" ||

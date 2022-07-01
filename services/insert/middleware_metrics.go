@@ -3,9 +3,10 @@ package insert
 import (
 	"log"
 
-	customerrors "github.com/golang-http-server/entities/errors"
-	"github.com/golang-http-server/entities/metrics"
+	fkerrors "github.com/arquivei/foundationkit/errors"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/golang-http-server/entities/metrics"
 )
 
 type metricsMiddleware struct {
@@ -48,7 +49,7 @@ func WrapServiceWithMetrics(next Service) Service {
 func (m *metricsMiddleware) Insert(request Request) (Response, error) {
 	response, err := m.next.Insert(request)
 	if err != nil {
-		m.metrics.ResponseFailedCounter.WithLabelValues("INSERT", "/nfe/insert", err.(customerrors.Error).ErrorCode).Inc()
+		m.metrics.ResponseFailedCounter.WithLabelValues("INSERT", "/nfe/insert", err.(fkerrors.Error).Code.String()).Inc()
 		return Response{}, err
 	}
 	m.metrics.ResponseSuccessedCounter.WithLabelValues("INSERT", "/nfe/insert").Inc()

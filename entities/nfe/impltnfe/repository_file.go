@@ -17,7 +17,7 @@ func NewNFeFileRepository(json_file_path string) nfe.Repository {
 }
 
 func (repository *nfeFileRepository) FindByID(id string) (nfe.NFeDocument, error) {
-	const op = fkerrors.Op("nfe.impltnfe.file.FindByID")
+	const op = fkerrors.Op("impltnfe.file.FindByID")
 
 	store, err := repository.loadFileData()
 	if err != nil {
@@ -45,11 +45,11 @@ func (repository *nfeFileRepository) Save(nfeDocument nfe.NFeDocument) error {
 }
 
 func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
-	const op = fkerrors.Op("nfe.impltnfe.file.loadFileData")
+	const op = fkerrors.Op("impltnfe.file.loadFileData")
 
 	data, err := shared.FromFile(repository.json_file_path)
 	if err != nil {
-		return nfe.NFeDocuments{}, fkerrors.E(op, err)
+		return nfe.NFeDocuments{}, fkerrors.E(op, nfe.ErrCodeGetDocument, fkerrors.KV("file", err))
 	}
 
 	if string(data) == "" {
@@ -58,22 +58,22 @@ func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
 
 	store, err := shared.ToNFeDocuments(data)
 	if err != nil {
-		return store, fkerrors.E(op, err)
+		return store, fkerrors.E(op, nfe.ErrCodeProcessDocument, fkerrors.KV("file", err))
 	}
 	return store, nil
 }
 
 func (repository *nfeFileRepository) saveFileData(store nfe.NFeDocuments) error {
-	const op = fkerrors.Op("nfe.impltnfe.file.saveFileData")
+	const op = fkerrors.Op("impltnfe.file.saveFileData")
 
 	data, err := shared.FromNFeDocuments(store)
 	if err != nil {
-		return fkerrors.E(op, err)
+		return fkerrors.E(op, nfe.ErrCodeProcessDocument, fkerrors.KV("file", err))
 	}
 
 	err = shared.ToFile(repository.json_file_path, data)
 	if err != nil {
-		return fkerrors.E(op, err)
+		return fkerrors.E(op, nfe.ErrCodeSaveDocument, fkerrors.KV("file", err))
 	}
 	return nil
 }
