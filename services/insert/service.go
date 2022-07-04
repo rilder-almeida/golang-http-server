@@ -1,9 +1,5 @@
 package insert
 
-import (
-	fkerrors "github.com/arquivei/foundationkit/errors"
-)
-
 type Service interface {
 	Insert(Request) (Response, error)
 }
@@ -32,11 +28,6 @@ func (s *service) Insert(request Request) (Response, error) {
 	return response, nil
 }
 
-// TODO verificar ser a validação do request deve ser feita na camada de serviço ou endipoint
 func (s *service) validateRequest(request *Request) error {
-	const op = fkerrors.Op("insert.validateRequest")
-	if request.XML == "" {
-		return fkerrors.E(op, ErrCodeInvalidRequest)
-	}
 	return nil
 }

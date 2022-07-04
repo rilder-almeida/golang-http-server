@@ -19,11 +19,11 @@ func WrapRepositoryWithCache(repository nfe.Repository) nfe.Repository {
 
 func (cp *cacheMiddleware) FindByID(id string) (nfe.NFeDocument, error) {
 	if value, ok := cp.cache.Load(id); ok {
-		return value.(nfe.NFeDocument), nfe.ErrAlreadyExists
+		return value.(nfe.NFeDocument), nil
 	}
 	nfeDocument, err := cp.next.FindByID(id)
 
-	if err == nfe.ErrAlreadyExists {
+	if err == nil {
 		cp.cache.Store(id, nfeDocument)
 	}
 	return nfeDocument, err

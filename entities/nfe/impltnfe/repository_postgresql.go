@@ -40,11 +40,11 @@ func (repository *nfePostgresqlRepository) FindByID(id string) (nfe.NFeDocument,
 
 	var postgresModel postgresModel
 	result := repository.db.Where("nfe_id = ?", id).Table("nfe").First(&postgresModel)
-	if result.RowsAffected == 0 || errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeDocumentNotFound)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) || result.RowsAffected == 0 {
+		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrDocumentNotFound, nfe.ErrCodeDocumentNotFound)
 	}
 	if result.Error != nil {
-		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeSaveDocument, fkerrors.KV("postgres", result.Error))
+		return nfe.NFeDocument{}, fkerrors.E(op, result.Error, nfe.ErrCodeGetDocument)
 	}
 
 	document, err := fromPostgresModel(postgresModel)
@@ -65,11 +65,11 @@ func (repository *nfePostgresqlRepository) Save(nfeDocument nfe.NFeDocument) err
 
 	result := repository.db.Create(&postgresModel)
 	if result.RowsAffected == 0 {
-		return fkerrors.E(op, nfe.ErrCodeSaveDocument)
+		return fkerrors.E(op, nfe.ErrSaveDocument, nfe.ErrCodeSaveDocument)
 	}
 
 	if result.Error != nil {
-		fkerrors.E(op, nfe.ErrCodeSaveDocument, fkerrors.KV("postgres", result.Error))
+		fkerrors.E(op, result.Error, nfe.ErrCodeSaveDocument)
 	}
 
 	return nil
@@ -82,7 +82,7 @@ func toPostgresModel(nfeDocument nfe.NFeDocument) (postgresModel, error) {
 		nfeDocument.NFeXmlDocument.NFe.InfNFe.Id == "" ||
 		nfeDocument.NFeXmlDocument.NFe.InfNFe.Emit.CNPJ == "" ||
 		nfeDocument.NFeXmlDocument.NFe.InfNFe.Total.ICMSTot.VNF == "" {
-		return postgresModel{}, fkerrors.E(op, nfe.ErrCodeProcessDocument)
+		return postgresModel{}, fkerrors.E(op, nfe.ErrProcessDocument, nfe.ErrCodeProcessDocument)
 	}
 
 	return postgresModel{
@@ -100,7 +100,7 @@ func fromPostgresModel(postgresModel postgresModel) (nfe.NFeDocument, error) {
 		postgresModel.NfeId == "" ||
 		postgresModel.CNPJ == "" ||
 		postgresModel.VNF == "" {
-		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeProcessDocument)
+		return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrProcessDocument, nfe.ErrCodeProcessDocument)
 	}
 
 	return nfe.NFeDocument{

@@ -64,7 +64,7 @@ func insertHTTPStatusCode(err error) int {
 		return http.StatusNotFound
 	case nfe.ErrCodeProcessDocument, nfe.ErrCodeSaveDocument, nfe.ErrCodeGetDocument, ErrCodeInvalidResponse:
 		return http.StatusInternalServerError
-	case insert.ErrCodeInvalidRequest, ErrCodeInvalidRequest:
+	case insert.ErrCodeInvalidRequest, ErrCodeInvalidRequest, ErrCodeInvalidResponse:
 		return http.StatusBadRequest
 	}
 	return apiutil.GetDefaultErrorHTTPStatusCode(err)

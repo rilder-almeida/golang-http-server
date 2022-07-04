@@ -1,6 +1,5 @@
 package internal
 
-// TODO
 import (
 	"context"
 	"net/http"
@@ -65,7 +64,7 @@ func getHTTPStatusCode(err error) int {
 		return http.StatusNotFound
 	case nfe.ErrCodeProcessDocument, nfe.ErrCodeSaveDocument, nfe.ErrCodeGetDocument, ErrCodeInvalidResponse:
 		return http.StatusInternalServerError
-	case get.ErrCodeInvalidRequest, ErrCodeInvalidRequest:
+	case get.ErrCodeInvalidRequest, ErrCodeInvalidResponse, ErrCodeInvalidRequest:
 		return http.StatusBadRequest
 	}
 	return apiutil.GetDefaultErrorHTTPStatusCode(err)

@@ -30,7 +30,7 @@ func (repository *nfeFileRepository) FindByID(id string) (nfe.NFeDocument, error
 		}
 	}
 
-	return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeDocumentNotFound)
+	return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrDocumentNotFound, nfe.ErrCodeDocumentNotFound)
 }
 
 func (repository *nfeFileRepository) Save(nfeDocument nfe.NFeDocument) error {
@@ -49,7 +49,7 @@ func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
 
 	data, err := shared.FromFile(repository.json_file_path)
 	if err != nil {
-		return nfe.NFeDocuments{}, fkerrors.E(op, nfe.ErrCodeGetDocument, fkerrors.KV("file", err))
+		return nfe.NFeDocuments{}, fkerrors.E(op, err, nfe.ErrCodeGetDocument)
 	}
 
 	if string(data) == "" {
@@ -58,7 +58,7 @@ func (repository *nfeFileRepository) loadFileData() (nfe.NFeDocuments, error) {
 
 	store, err := shared.ToNFeDocuments(data)
 	if err != nil {
-		return store, fkerrors.E(op, nfe.ErrCodeProcessDocument, fkerrors.KV("file", err))
+		return store, fkerrors.E(op, err, nfe.ErrCodeProcessDocument)
 	}
 	return store, nil
 }
@@ -68,12 +68,12 @@ func (repository *nfeFileRepository) saveFileData(store nfe.NFeDocuments) error 
 
 	data, err := shared.FromNFeDocuments(store)
 	if err != nil {
-		return fkerrors.E(op, nfe.ErrCodeProcessDocument, fkerrors.KV("file", err))
+		return fkerrors.E(op, err, nfe.ErrCodeProcessDocument)
 	}
 
 	err = shared.ToFile(repository.json_file_path, data)
 	if err != nil {
-		return fkerrors.E(op, nfe.ErrCodeSaveDocument, fkerrors.KV("file", err))
+		return fkerrors.E(op, err, nfe.ErrCodeSaveDocument)
 	}
 	return nil
 }

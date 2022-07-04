@@ -23,7 +23,6 @@ func (adapter *Adapter) Processor(request insert.Request) (insert.Response, erro
 	if err != nil {
 		return insert.Response{}, err
 	}
-
 	return adapter.responder(ok), nil
 }
 
@@ -32,11 +31,15 @@ func (adapter *Adapter) receiver(request insert.Request) (error, bool) {
 
 	xmlDocument, err := shared.ToXmlDocument([]byte(request.XML))
 	if err != nil {
-		return fkerrors.E(op, fkerrors.KV("ToXmlDocument", err), insert.ErrCodeInvalidRequest), false
+		return fkerrors.E(op, err, insert.ErrCodeInvalidRequest), false
 	}
 
-	document, err := adapter.repository.FindByID(xmlDocument.NFe.InfNFe.Id)
-	if err.(fkerrors.Error).Code == nfe.ErrCodeDocumentNotFound && document.IsEmpty() {
+	_, err = adapter.repository.FindByID(xmlDocument.NFe.InfNFe.Id)
+	if err == nil {
+		return nil, false
+	}
+
+	if err.(fkerrors.Error).Err == nfe.ErrDocumentNotFound {
 		nfeDocument := nfe.NFeDocument{
 			RawXml:         request.XML,
 			NFeXmlDocument: xmlDocument,
@@ -46,7 +49,6 @@ func (adapter *Adapter) receiver(request insert.Request) (error, bool) {
 		if err != nil {
 			return err, false
 		}
-
 		return nil, true
 	}
 

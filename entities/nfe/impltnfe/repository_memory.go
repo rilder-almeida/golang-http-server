@@ -26,7 +26,7 @@ func (repository *nfeMemoryRepository) FindByID(id string) (nfe.NFeDocument, err
 		}
 	}
 
-	return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrCodeDocumentNotFound)
+	return nfe.NFeDocument{}, fkerrors.E(op, nfe.ErrDocumentNotFound, nfe.ErrCodeDocumentNotFound)
 }
 
 func (repository *nfeMemoryRepository) Save(nfeDocument nfe.NFeDocument) error {

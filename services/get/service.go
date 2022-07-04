@@ -1,9 +1,5 @@
 package get
 
-import (
-	fkerrors "github.com/arquivei/foundationkit/errors"
-)
-
 type Service interface {
 	Get(Request) (Response, error)
 }
@@ -33,9 +29,5 @@ func (s *service) Get(request Request) (Response, error) {
 }
 
 func (s *service) validateRequest(request *Request) error {
-	const op = fkerrors.Op("get.validateRequest")
-	if request.Id == "" {
-		return fkerrors.E(op, ErrCodeInvalidRequest)
-	}
 	return nil
 }

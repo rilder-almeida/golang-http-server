@@ -19,6 +19,7 @@ func MakeHTTPHandler(endpoint endpoint.Endpoint) http.Handler {
 		endpoint,
 		decodeHTTPRequest,
 		encodeHTTPResponse,
+		internal.GetHTTPServerOption()...,
 	)
 
 	router := mux.NewRouter()
@@ -33,9 +34,9 @@ func decodeHTTPRequest(_ context.Context, r *http.Request) (interface{}, error) 
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&httpRequest.Body)
 	if err != nil {
-		return nil, fkerrors.E(op, internal.ErrCodeInvalidRequest, fkerrors.KV("Decode", err))
+		return nil, fkerrors.E(op, err, internal.ErrCodeInvalidRequest)
 	}
-	return translateToEndpointRequest(httpRequest), nil
+	return translateToEndpointRequest(httpRequest)
 }
 
 func encodeHTTPResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
@@ -44,15 +45,19 @@ func encodeHTTPResponse(_ context.Context, w http.ResponseWriter, response inter
 	httpResponse := translateToHTTPResponse(response.(GetEndpointResponse))
 	err := shared.EncodeJSONResponse(w, httpResponse)
 	if err != nil {
-		return fkerrors.E(op, internal.ErrCodeInvalidResponse, fkerrors.KV("Encode", err))
+		return fkerrors.E(op, err, internal.ErrCodeInvalidResponse)
 	}
 	return nil
 }
 
-func translateToEndpointRequest(httpRequest internal.GetHTTPRequest) GetEndpointRequest {
+func translateToEndpointRequest(httpRequest internal.GetHTTPRequest) (GetEndpointRequest, error) {
+	err := internal.ValidateGetHTTPRequest(httpRequest)
+	if err != nil {
+		return GetEndpointRequest{}, err
+	}
 	return GetEndpointRequest{
 		Id: httpRequest.Body.Id,
-	}
+	}, nil
 }
 
 func translateToHTTPResponse(endpointResponse GetEndpointResponse) internal.GetHTTPResponse {

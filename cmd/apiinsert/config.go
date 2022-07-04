@@ -19,7 +19,7 @@ var config struct {
 	}
 
 	Repository struct {
-		Type     string `default:"INFILE"`
+		Type     string `default:"FILE"`
 		FilePath string `default:"./data/nfe.json"`
 	}
 
