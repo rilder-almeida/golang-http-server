@@ -13,6 +13,8 @@ import (
 
 var version = "development"
 
+const instrumentingSystem = "apinfe"
+
 const (
 	shutdownPriorityHTTP = app.ShutdownPriority(100)
 )

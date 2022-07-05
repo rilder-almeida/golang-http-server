@@ -5,6 +5,8 @@ import (
 	"net/http"
 
 	"github.com/arquivei/foundationkit/app"
+	"github.com/arquivei/foundationkit/gokitmiddlewares/loggingmiddleware"
+	"github.com/arquivei/foundationkit/gokitmiddlewares/metricsmiddleware"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/nfe/impltnfe"
@@ -51,9 +53,14 @@ func getHTTPServer() *http.Server {
 }
 
 func getInsertEndpoint() endpoint.Endpoint {
-	// IMPLEMENT endpoint.Chain()() middlewares
 	if insertEndpoint == nil {
-		insertEndpoint = apiinsert.MakeAPIInsertEndpoint(insert.NewService(implinsert.NewAdapter(NewNFeRepository())))
+		loggingConfig := loggingmiddleware.NewDefaultConfig("insert")
+		metricsConfig := metricsmiddleware.NewDefaultConfig(instrumentingSystem, "insert")
+
+		insertEndpoint = endpoint.Chain(
+			loggingmiddleware.MustNew(loggingConfig),
+			metricsmiddleware.MustNew(metricsConfig),
+		)(apiinsert.MakeAPIInsertEndpoint(insert.NewService(implinsert.NewAdapter(NewNFeRepository()))))
 	}
 	return insertEndpoint
 }

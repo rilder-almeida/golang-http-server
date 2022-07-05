@@ -29,7 +29,11 @@ contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/gcp
 github.com/arquivei/foundationkit/apiutil
 github.com/arquivei/foundationkit/app
 github.com/arquivei/foundationkit/errors
+github.com/arquivei/foundationkit/gokitmiddlewares
+github.com/arquivei/foundationkit/gokitmiddlewares/loggingmiddleware
+github.com/arquivei/foundationkit/gokitmiddlewares/metricsmiddleware
 github.com/arquivei/foundationkit/log
+github.com/arquivei/foundationkit/metrifier
 github.com/arquivei/foundationkit/request
 github.com/arquivei/foundationkit/stringsutil
 github.com/arquivei/foundationkit/trace
@@ -89,6 +93,9 @@ github.com/cespare/xxhash/v2
 # github.com/go-kit/kit v0.12.0
 ## explicit; go 1.17
 github.com/go-kit/kit/endpoint
+github.com/go-kit/kit/metrics
+github.com/go-kit/kit/metrics/internal/lv
+github.com/go-kit/kit/metrics/prometheus
 github.com/go-kit/kit/transport
 github.com/go-kit/kit/transport/http
 # github.com/go-kit/log v0.2.1
