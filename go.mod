@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/arquivei/foundationkit v0.2.5
-	github.com/prometheus/client_golang v1.12.2
 	github.com/rs/zerolog v1.27.0
 	gorm.io/driver/postgres v1.3.7
 	gorm.io/gorm v1.23.5
@@ -32,6 +31,7 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
+	github.com/prometheus/client_golang v1.12.2 // indirect
 	github.com/prometheus/prometheus v0.36.0 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 )

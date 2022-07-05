@@ -12,7 +12,6 @@ import (
 	"github.com/golang-http-server/services/insert/apiinsert"
 	"github.com/golang-http-server/services/insert/implinsert"
 	"github.com/gorilla/mux"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -28,7 +27,6 @@ func getHTTPServer() *http.Server {
 		router := mux.NewRouter()
 
 		router.PathPrefix("/nfe").Handler(apiinsert.MakeHTTPHandler(getInsertEndpoint()))
-		router.PathPrefix("/metrics").Handler(promhttp.Handler())
 
 		httpAddr := ":" + config.HTTP.Port
 		httpServer = &http.Server{
