@@ -1,6 +1,8 @@
 package implinsert
 
 import (
+	"context"
+
 	fkerrors "github.com/arquivei/foundationkit/errors"
 
 	"github.com/golang-http-server/entities/nfe"
@@ -18,7 +20,7 @@ func NewAdapter(repository nfe.Repository) insert.InsertGateway {
 	}
 }
 
-func (adapter *Adapter) Processor(request insert.Request) (insert.Response, error) {
+func (adapter *Adapter) Processor(ctx context.Context, request insert.Request) (insert.Response, error) {
 	err, ok := adapter.receiver(request)
 	if err != nil {
 		return insert.Response{}, err

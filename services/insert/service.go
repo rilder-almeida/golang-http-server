@@ -1,7 +1,9 @@
 package insert
 
+import "context"
+
 type Service interface {
-	Insert(Request) (Response, error)
+	Insert(context.Context, Request) (Response, error)
 }
 
 type service struct {
@@ -14,14 +16,14 @@ func NewService(insertGateway InsertGateway) Service {
 	}
 }
 
-func (s *service) Insert(request Request) (Response, error) {
+func (s *service) Insert(ctx context.Context, request Request) (Response, error) {
 
 	err := s.validateRequest(&request)
 	if err != nil {
 		return Response{}, err
 	}
 
-	response, err := s.insertGateway.Processor(request)
+	response, err := s.insertGateway.Processor(ctx, request)
 	if err != nil {
 		return Response{}, err
 	}

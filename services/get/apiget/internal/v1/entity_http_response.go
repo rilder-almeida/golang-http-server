@@ -1,4 +1,4 @@
-package internal
+package v1
 
 import "github.com/golang-http-server/entities/xml"
 

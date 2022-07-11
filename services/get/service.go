@@ -1,7 +1,9 @@
 package get
 
+import "context"
+
 type Service interface {
-	Get(Request) (Response, error)
+	Get(context.Context, Request) (Response, error)
 }
 
 type service struct {
@@ -14,14 +16,14 @@ func NewService(getGateway GetGateway) Service {
 	}
 }
 
-func (s *service) Get(request Request) (Response, error) {
+func (s *service) Get(ctx context.Context, request Request) (Response, error) {
 
 	err := s.validateRequest(&request)
 	if err != nil {
 		return Response{}, err
 	}
 
-	response, err := s.getGateway.Processor(request)
+	response, err := s.getGateway.Processor(ctx, request)
 	if err != nil {
 		return Response{}, err
 	}

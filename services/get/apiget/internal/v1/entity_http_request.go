@@ -1,4 +1,4 @@
-package internal
+package v1
 
 import (
 	fkerrors "github.com/arquivei/foundationkit/errors"
@@ -12,7 +12,7 @@ type GetHTTPRequest struct {
 }
 
 func ValidateGetHTTPRequest(r GetHTTPRequest) error {
-	const op = fkerrors.Op("apiinsert.internal.ValidateInsertHTTPRequest")
+	const op = fkerrors.Op("apiinsert.v1.ValidateInsertHTTPRequest")
 
 	if r.Body.Id == "" {
 		return fkerrors.E(op, nfe.ErrEmptyId, ErrCodeInvalidRequest)

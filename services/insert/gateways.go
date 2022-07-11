@@ -1,5 +1,7 @@
 package insert
 
+import "context"
+
 type InsertGateway interface {
-	Processor(Request) (Response, error)
+	Processor(context.Context, Request) (Response, error)
 }

@@ -1,4 +1,4 @@
-package internal
+package v1
 
 type InsertHTTPResponse struct {
 	Body struct {

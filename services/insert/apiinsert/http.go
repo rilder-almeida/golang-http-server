@@ -10,7 +10,7 @@ import (
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
 
-	"github.com/golang-http-server/services/insert/apiinsert/internal"
+	"github.com/golang-http-server/services/insert/apiinsert/internal/v1"
 	"github.com/golang-http-server/shared"
 )
 
@@ -19,7 +19,7 @@ func MakeHTTPHandler(endpoint endpoint.Endpoint) http.Handler {
 		endpoint,
 		decodeHTTPRequest,
 		encodeHTTPResponse,
-		internal.GetHTTPServerOption()...,
+		v1.GetHTTPServerOption()...,
 	)
 
 	router := mux.NewRouter()
@@ -30,11 +30,11 @@ func MakeHTTPHandler(endpoint endpoint.Endpoint) http.Handler {
 func decodeHTTPRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	const op = fkerrors.Op("apiinsert.decodeHTTPRequest")
 
-	var httpRequest internal.InsertHTTPRequest
+	var httpRequest v1.InsertHTTPRequest
 	defer r.Body.Close()
 	err := json.NewDecoder(r.Body).Decode(&httpRequest.Body)
 	if err != nil {
-		return nil, fkerrors.E(op, err, internal.ErrCodeInvalidRequest)
+		return nil, fkerrors.E(op, err, v1.ErrCodeInvalidRequest)
 	}
 	return translateToEndpointRequest(httpRequest)
 }
@@ -45,13 +45,13 @@ func encodeHTTPResponse(_ context.Context, w http.ResponseWriter, response inter
 	httpResponse := translateToHTTPResponse(response.(InsertEndpointResponse))
 	err := shared.EncodeJSONResponse(w, httpResponse)
 	if err != nil {
-		return fkerrors.E(op, err, internal.ErrCodeInvalidResponse)
+		return fkerrors.E(op, err, v1.ErrCodeInvalidResponse)
 	}
 	return nil
 }
 
-func translateToEndpointRequest(httpRequest internal.InsertHTTPRequest) (InsertEndpointRequest, error) {
-	err := internal.ValidateInsertHTTPRequest(httpRequest)
+func translateToEndpointRequest(httpRequest v1.InsertHTTPRequest) (InsertEndpointRequest, error) {
+	err := v1.ValidateInsertHTTPRequest(httpRequest)
 	if err != nil {
 		return InsertEndpointRequest{}, err
 	}
@@ -61,8 +61,8 @@ func translateToEndpointRequest(httpRequest internal.InsertHTTPRequest) (InsertE
 	}, nil
 }
 
-func translateToHTTPResponse(endpointResponse InsertEndpointResponse) internal.InsertHTTPResponse {
-	return internal.InsertHTTPResponse{
+func translateToHTTPResponse(endpointResponse InsertEndpointResponse) v1.InsertHTTPResponse {
+	return v1.InsertHTTPResponse{
 		Body: endpointResponse,
 	}
 }

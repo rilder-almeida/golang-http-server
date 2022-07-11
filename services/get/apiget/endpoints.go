@@ -21,7 +21,7 @@ func MakeAPIGetEndpoint(service get.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 
 		req := request.(GetEndpointRequest)
-		data, err := service.Get(TranslateToServiceRequest(req))
+		data, err := service.Get(ctx, TranslateToServiceRequest(req))
 
 		return TranslateToEndpointResponse(data), err
 	}

@@ -1,6 +1,8 @@
 package implget
 
 import (
+	"context"
+
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/services/get"
 )
@@ -15,7 +17,7 @@ func NewAdapter(repository nfe.Repository) get.GetGateway {
 	}
 }
 
-func (adapter *Adapter) Processor(request get.Request) (get.Response, error) {
+func (adapter *Adapter) Processor(ctx context.Context, request get.Request) (get.Response, error) {
 	nfeDocument, err := adapter.receiver(request)
 	if err != nil {
 		return get.Response{}, err

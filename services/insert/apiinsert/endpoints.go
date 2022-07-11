@@ -20,7 +20,7 @@ func MakeAPIInsertEndpoint(service insert.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 
 		req := request.(InsertEndpointRequest)
-		data, err := service.Insert(TranslateToServiceRequest(req))
+		data, err := service.Insert(ctx, TranslateToServiceRequest(req))
 
 		return TranslateToEndpointResponse(data), err
 	}

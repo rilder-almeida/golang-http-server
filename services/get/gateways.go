@@ -1,5 +1,7 @@
 package get
 
+import "context"
+
 type GetGateway interface {
-	Processor(Request) (Response, error)
+	Processor(context.Context, Request) (Response, error)
 }
