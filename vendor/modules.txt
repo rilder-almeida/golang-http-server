@@ -28,10 +28,12 @@ contrib.go.opencensus.io/exporter/stackdriver/monitoredresource/gcp
 ## explicit; go 1.17
 github.com/arquivei/foundationkit/apiutil
 github.com/arquivei/foundationkit/app
+github.com/arquivei/foundationkit/contextmap
 github.com/arquivei/foundationkit/errors
 github.com/arquivei/foundationkit/gokitmiddlewares
 github.com/arquivei/foundationkit/gokitmiddlewares/loggingmiddleware
 github.com/arquivei/foundationkit/gokitmiddlewares/metricsmiddleware
+github.com/arquivei/foundationkit/gokitmiddlewares/trackingmiddleware
 github.com/arquivei/foundationkit/log
 github.com/arquivei/foundationkit/metrifier
 github.com/arquivei/foundationkit/request

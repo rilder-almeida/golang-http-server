@@ -5,8 +5,10 @@ import (
 	"net/http"
 
 	"github.com/arquivei/foundationkit/app"
+	"github.com/arquivei/foundationkit/contextmap"
 	"github.com/arquivei/foundationkit/gokitmiddlewares/loggingmiddleware"
 	"github.com/arquivei/foundationkit/gokitmiddlewares/metricsmiddleware"
+	"github.com/arquivei/foundationkit/gokitmiddlewares/trackingmiddleware"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/entities/nfe/impltnfe"
@@ -58,6 +60,8 @@ func getInsertEndpoint() endpoint.Endpoint {
 		metricsConfig := metricsmiddleware.NewDefaultConfig(instrumentingSystem, "insert")
 
 		insertEndpoint = endpoint.Chain(
+			contextmap.NewEndpointMiddleware(),
+			trackingmiddleware.New(),
 			loggingmiddleware.MustNew(loggingConfig),
 			metricsmiddleware.MustNew(metricsConfig),
 		)(apiinsert.MakeAPIInsertEndpoint(insert.NewService(implinsert.NewAdapter(NewNFeRepository()))))

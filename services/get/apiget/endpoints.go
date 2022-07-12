@@ -3,8 +3,10 @@ package apiget
 import (
 	"context"
 
+	"github.com/arquivei/foundationkit/contextmap"
 	"github.com/golang-http-server/entities/xml"
 	"github.com/golang-http-server/services/get"
+	"github.com/rs/zerolog"
 
 	"github.com/go-kit/kit/endpoint"
 )
@@ -37,4 +39,22 @@ func TranslateToEndpointResponse(data get.Response) GetEndpointResponse {
 	return GetEndpointResponse{
 		NFeXmlDocument: data.NFeXmlDocument,
 	}
+}
+
+func (r GetEndpointRequest) EnrichLog(
+	ctx context.Context,
+	zctx zerolog.Context,
+) zerolog.Context {
+	ctxMap := contextmap.Ctx(ctx)
+	return zctx.
+		Str("contextmap", ctxMap.String())
+}
+
+func (r GetEndpointResponse) EnrichLog(
+	ctx context.Context,
+	zctx zerolog.Context,
+) zerolog.Context {
+	ctxMap := contextmap.Ctx(ctx)
+	return zctx.
+		Str("contextmap", ctxMap.String())
 }
