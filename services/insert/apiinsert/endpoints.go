@@ -40,22 +40,23 @@ func TranslateToEndpointResponse(data insert.Response) InsertEndpointResponse {
 	}
 }
 
-func (r InsertEndpointRequest) EnrichLog(
+//FIXME NOT WORKING
+func (request InsertEndpointRequest) EnrichLog(
 	ctx context.Context,
 	zctx zerolog.Context,
 ) zerolog.Context {
 	ctxMap := contextmap.Ctx(ctx)
 	return zctx.
 		Str("contextmap", ctxMap.String()).
-		Str("xml", r.XML)
+		Str("xml", request.XML)
 }
 
-func (r InsertEndpointResponse) EnrichLog(
+func (response InsertEndpointResponse) EnrichLog(
 	ctx context.Context,
 	zctx zerolog.Context,
 ) zerolog.Context {
 	ctxMap := contextmap.Ctx(ctx)
 	return zctx.
 		Str("contextmap", ctxMap.String()).
-		Bool("isnewnfe", r.IsNewNFe)
+		Bool("isnewnfe", response.IsNewNFe)
 }

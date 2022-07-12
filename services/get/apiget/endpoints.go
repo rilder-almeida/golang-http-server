@@ -41,22 +41,23 @@ func TranslateToEndpointResponse(data get.Response) GetEndpointResponse {
 	}
 }
 
-func (r GetEndpointRequest) EnrichLog(
+//FIXME NOT WORKING
+func (request GetEndpointRequest) EnrichLog(
 	ctx context.Context,
 	zctx zerolog.Context,
 ) zerolog.Context {
 	ctxMap := contextmap.Ctx(ctx)
 	return zctx.
 		Str("contextmap", ctxMap.String()).
-		Str("id", r.Id)
+		Str("id", request.Id)
 }
 
-func (r GetEndpointResponse) EnrichLog(
+func (response GetEndpointResponse) EnrichLog(
 	ctx context.Context,
 	zctx zerolog.Context,
 ) zerolog.Context {
 	ctxMap := contextmap.Ctx(ctx)
 	return zctx.
 		Str("contextmap", ctxMap.String()).
-		Str("nfexmldocument", r.NFeXmlDocument.NFe.InfNFe.Id)
+		Str("nfexmldocument", response.NFeXmlDocument.NFe.InfNFe.Id)
 }
