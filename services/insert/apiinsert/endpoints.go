@@ -5,7 +5,9 @@ import (
 
 	"github.com/golang-http-server/services/insert"
 
+	"github.com/arquivei/foundationkit/contextmap"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/rs/zerolog"
 )
 
 type InsertEndpointResponse struct {
@@ -36,4 +38,24 @@ func TranslateToEndpointResponse(data insert.Response) InsertEndpointResponse {
 	return InsertEndpointResponse{
 		IsNewNFe: data.IsNewNFe,
 	}
+}
+
+func (r InsertEndpointRequest) EnrichLog(
+	ctx context.Context,
+	zctx zerolog.Context,
+) zerolog.Context {
+	ctxMap := contextmap.Ctx(ctx)
+	return zctx.
+		Str("contextmap", ctxMap.String()).
+		Str("xml", r.XML)
+}
+
+func (r InsertEndpointResponse) EnrichLog(
+	ctx context.Context,
+	zctx zerolog.Context,
+) zerolog.Context {
+	ctxMap := contextmap.Ctx(ctx)
+	return zctx.
+		Str("contextmap", ctxMap.String()).
+		Bool("isnewnfe", r.IsNewNFe)
 }
