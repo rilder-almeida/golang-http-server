@@ -4,6 +4,8 @@ import (
 	"context"
 
 	fkerrors "github.com/arquivei/foundationkit/errors"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 
 	"github.com/golang-http-server/entities/nfe"
 	"github.com/golang-http-server/services/insert"
@@ -25,6 +27,7 @@ func (adapter *Adapter) Processor(ctx context.Context, request insert.Request) (
 	if err != nil {
 		return insert.Response{}, err
 	}
+	EnrichLogWithResponse(ctx, request, ok)
 	return adapter.responder(ok), nil
 }
 
@@ -61,4 +64,10 @@ func (adapter *Adapter) responder(isNewNFe bool) insert.Response {
 	return insert.Response{
 		IsNewNFe: isNewNFe,
 	}
+}
+
+func EnrichLogWithResponse(ctx context.Context, request insert.Request, r bool) {
+	log.Ctx(ctx).UpdateContext(func(zc zerolog.Context) zerolog.Context {
+		return zc.Bool("Successful?", r)
+	})
 }

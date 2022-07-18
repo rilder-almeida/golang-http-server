@@ -41,15 +41,11 @@ func TranslateToEndpointResponse(data get.Response) GetEndpointResponse {
 	}
 }
 
-//FIXME NOT WORKING
 func (request GetEndpointRequest) EnrichLog(
 	ctx context.Context,
 	zctx zerolog.Context,
-) zerolog.Context {
-	ctxMap := contextmap.Ctx(ctx)
-	return zctx.
-		Str("contextmap", ctxMap.String()).
-		Str("id", request.Id)
+) (context.Context, zerolog.Context) {
+	return ctx, zctx.Str("id", request.Id)
 }
 
 func (response GetEndpointResponse) EnrichLog(
@@ -61,3 +57,5 @@ func (response GetEndpointResponse) EnrichLog(
 		Str("contextmap", ctxMap.String()).
 		Str("nfexmldocument", response.NFeXmlDocument.NFe.InfNFe.Id)
 }
+
+// TODO: PR enrichlog no FK
